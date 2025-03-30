@@ -1,0 +1,97 @@
+const content = (
+    <>
+      <h1 className="text-3xl font-bold mb-2">Unicode Text Converter</h1>
+      <p className="text-gray-300 mb-6">
+        Convert your text to various Unicode styles like bold, italic, script, and more.
+      </p>
+
+      <div className="mb-6">
+        <RadioGroup
+          defaultValue="bold"
+          value={style}
+          onValueChange={(value) => setStyle(value as UnicodeStyle)}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
+        >
+          {Object.entries(styleNames).map(([key, name]) => (
+            <div key={key} className="flex items-center space-x-2">
+              <RadioGroupItem value={key} id={key} />
+              <Label htmlFor={key}>{name}</Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
+
+      <Textarea
+        placeholder="Type or paste your text here"
+        className="w-full min-h-[200px] bg-zinc-700 text-white border-zinc-600 mb-4 p-4 rounded"
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+      />
+
+      <Textarea
+        readOnly
+        className="w-full min-h-[150px] bg-zinc-700 text-white border-zinc-600 mb-4 p-4 rounded"
+        value={outputText}
+        placeholder="Unicode styled text will appear here"
+      />
+
+      <div className="grid grid-cols-2 gap-2 mb-4">
+        <Button
+          variant="outline"
+          className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
+          onClick={handleCopy}
+          disabled={!outputText}
+        >
+          {copied ? "Copied!" : "Copy to Clipboard"}
+        </Button>
+        <Button
+          variant="outline"
+          className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
+          onClick={handleClear}
+        >
+          Clear
+        </Button>
+      </div>
+
+      <div className="mt-8 mb-12">
+        <h2 className="text-xl font-bold mb-4">About Unicode Text Converter</h2>
+        <p className="text-gray-300 mb-4">
+          This tool converts your regular text into various Unicode styles. These
+          special Unicode characters allow you to create stylized text that can be
+          used in social media posts, profiles, messages, and more.
+        </p>
+        <p className="text-gray-300 mb-4">
+          Available styles include:
+        </p>
+        <ul className="list-disc list-inside text-gray-300 mb-4 space-y-1">
+          <li><span className="font-bold">Bold</span> - For emphasis and headers</li>
+          <li><span className="italic">Italic</span> - For emphasis and quotes</li>
+          <li><span className="font-bold italic">Bold Italic</span> - For strong emphasis</li>
+          <li>𝖲𝖺𝗇𝗌 𝖲𝖾𝗋𝗂𝖿 - For clean, modern text</li>
+          <li>𝗦𝗮𝗻𝘀 𝗦𝗲𝗿𝗶𝗳 𝗕𝗼𝗹𝗱 - For bold modern text</li>
+          <li>𝘚𝘢𝘯𝘴 𝘚𝘦𝘳𝘪𝘧 𝘐𝘵𝘢𝘭𝘪𝘤 - For italic modern text</li>
+          <li>𝙎𝙖𝙣𝙨 𝙎𝙚𝙧𝙞𝙛 𝘽𝙤𝙡𝙙 𝙄𝙩𝙖𝙡𝙞𝙘 - For bold italic modern text</li>
+          <li>𝙼𝚘𝚗𝚘𝚜𝚙𝚊𝚌𝚎 - For code and technical text</li>
+        </ul>
+        <p className="text-gray-300 mb-4">
+          Note that these Unicode characters may not display correctly in all
+          applications or fonts. They work best on modern platforms that support
+          Unicode fully.
+        </p>
+      </div>
+
+      <div className="border-t border-zinc-700 pt-8 mb-8">
+        <h2 className="text-2xl font-bold mb-6">Additional Text Case Tools</h2>
+        <TextCaseTools
+          showTitle={false}
+          showDescription={false}
+          initialText={outputText}
+        />
+      </div>
+    </>
+  );
+
+  return <MainLayout>{content}</MainLayout>;
+};
+
+export default UnicodeTextConverter;

@@ -1,0 +1,195 @@
+{
+  "categories": [
+    {
+      "name": "Text Modification/Formatting",
+      "items": [
+        {
+          "name": "APA Format Converter & Generator",
+          "path": "/apa-format-converter-generator"
+        },
+        { "name": "Big Text Converter", "path": "/big-text-generator" },
+        { "name": "Bold Text Generator", "path": "/bold-text-converter" },
+        { "name": "Bubble Text Generator", "path": "/bubble-text-generator" },
+        { "name": "Cursed Text Tool", "path": "/cursed-text" },
+        {
+          "name": "Discord Font Generator",
+          "path": "/discord-fonts-generator"
+        },
+        { "name": "Duplicate Line Remover", "path": "/duplicate-line-remover" },
+        {
+          "name": "Facebook Font Generator",
+          "path": "/facebook-font-generator"
+        },
+        { "name": "Fonts for Instagram", "path": "/instagram-fonts" },
+        {
+          "name": "Invisible Text Generator",
+          "path": "/invisible-text-generator"
+        },
+        { "name": "Italic Text Converter", "path": "/italic-text-converter" },
+        { "name": "Mirror Text Generator", "path": "/mirror-text-generator" },
+        {
+          "name": "Phonetic Spelling Generator",
+          "path": "/phonetic-spelling-generator"
+        },
+        { "name": "Pig Latin Translator", "path": "/pig-latin-translator" },
+        { "name": "Plain Text Converter", "path": "/plain-text-converter" },
+        {
+          "name": "Remove Letters & Characters",
+          "path": "/letter-character-removal-tool"
+        },
+        { "name": "Remove Line Breaks", "path": "/remove-line-breaks" },
+        { "name": "Remove Text Formatting", "path": "/remove-text-formatting" },
+        { "name": "Reverse Text Generator", "path": "/reverse-text-generator" },
+        { "name": "Sentence Case Converter", "path": "/sentence-case" },
+        {
+          "name": "Slash Text Generator Tool",
+          "path": "/slash-text-generator"
+        },
+        { "name": "Small Text Generator", "path": "/small-text-generator" },
+        { "name": "Stacked Text Generator", "path": "/stacked-text-generator" },
+        {
+          "name": "Strikethrough Text Generator",
+          "path": "/strikethrough-text-generator"
+        },
+        { "name": "Subscript Generator", "path": "/subscript-generator" },
+        { "name": "Superscript Generator", "path": "/superscript-generator" },
+        { "name": "Title Case Converter", "path": "/title-case-converter" },
+        { "name": "Underline Text Generator", "path": "/underline-text" },
+        { "name": "Unicode Text Converter", "path": "/unicode-text-converter" },
+        {
+          "name": "Upside Down Text Generator",
+          "path": "/upside-down-text-generator"
+        },
+        { "name": "Whitespace Remover", "path": "/whitespace-remover" },
+        {
+          "name": "Wide Text Generator",
+          "path": "/vaporwave-wide-text-generator"
+        },
+        { "name": "Wingdings Converter", "path": "/wingdings-converter" },
+        {
+          "name": "X & Twitter Font Generator",
+          "path": "/twitter-font-generator"
+        },
+        {
+          "name": "Zalgo Glitch Text Generator",
+          "path": "/glitch-text-converter"
+        }
+      ]
+    },
+    {
+      "name": "Code & Data Translation",
+      "items": [
+        { "name": "Base64 Encoder/Decoder", "path": "/base64-decode-encode" },
+        { "name": "Binary Code Translator", "path": "/binary-code-translator" },
+        { "name": "Caesar Cipher Tool", "path": "/caesar-cipher-encryption" },
+        { "name": "CSV to JSON Converter", "path": "/csv-to-json" },
+        { "name": "JSON to CSV/TSV Converter", "path": "/json-to-csv" },
+        { "name": "JSON Beautifier & Validator", "path": "/json-beautifier" },
+        { "name": "SQL to JSON Converter", "path": "/sql-to-json" },
+        { "name": "CSVJSON to JSON Converter", "path": "/csvjson-to-json" },
+        { "name": "Hex to Text Converter", "path": "/hex-to-text-converter" },
+        {
+          "name": "JSON Stringify Text Generator",
+          "path": "/json-stringify-text"
+        },
+        { "name": "MD5 Hash Generator", "path": "/md5-hash-generator" },
+        { "name": "Morse Code Translator", "path": "/morse-code-translator" },
+        { "name": "Number Sorter", "path": "/number-sorter" },
+        { "name": "Regex Tester Tool", "path": "/regex-tester-tool" },
+        { "name": "ROT13 Encoder/Decoder", "path": "/rot13-encoder-decoder" },
+        {
+          "name": "Slugify URL Generator",
+          "path": "/slugify-url-handle-generator"
+        },
+        { "name": "URL Encode and Decode", "path": "/url-encode-decode" },
+        { "name": "UTF-8 Encoder/Decoder", "path": "/utf8-encoding" },
+        { "name": "UTM Builder Generator", "path": "/utm-generator" }
+      ]
+    },
+    {
+      "name": "Image Tools",
+      "items": [
+        {
+          "name": "AI Image to Text Converter",
+          "path": "/image-to-text-converter"
+        },
+        { "name": "Ascii Art Generator", "path": "/ascii-art-generator" },
+        { "name": "JPG to PNG Converter", "path": "/jpg-to-png" },
+        { "name": "JPG to WebP Converter", "path": "/jpg-to-webp" },
+        { "name": "PNG to JPG Converter", "path": "/png-to-jpg" },
+        { "name": "PNG to WebP Converter", "path": "/png-to-webp" },
+        { "name": "SVG to PNG Converter", "path": "/svg-to-png" },
+        { "name": "WebP to JPG Converter", "path": "/webp-to-jpg" },
+        { "name": "WebP to PNG Converter", "path": "/webp-to-png" }
+      ]
+    },
+    {
+      "name": "Random Generators",
+      "items": [
+        {
+          "name": "Random Choice Generator",
+          "path": "/random-choice-generator"
+        },
+        { "name": "Random Date Generator", "path": "/random-date-generator" },
+        {
+          "name": "Random IP Address Generator",
+          "path": "/random-ip-address-generator"
+        },
+        {
+          "name": "Random Letter Generator",
+          "path": "/random-letter-generator"
+        },
+        { "name": "Random Month Generator", "path": "/random-month-generator" },
+        {
+          "name": "Random Number Generator",
+          "path": "/random-number-generator"
+        },
+        {
+          "name": "Strong Password Generator",
+          "path": "/strong-password-generator"
+        },
+        { "name": "UUID Generator", "path": "/uuid-generator" }
+      ]
+    },
+    {
+      "name": "Misc. Tools",
+      "items": [
+        {
+          "name": "NATO Phonetic Alphabet Translator",
+          "path": "/nato-alphabet-translator"
+        },
+        { "name": "Online Notepad", "path": "/online-notepad" },
+        {
+          "name": "Online Sentence Counter",
+          "path": "/online-sentence-counter"
+        },
+        { "name": "Repeat Text Generator", "path": "/repeat-text" },
+        {
+          "name": "Roman Numeral Date Converter",
+          "path": "/roman-numeral-date-converter"
+        },
+        { "name": "Sort Words Alphabetically", "path": "/sort-alphabetically" },
+        { "name": "Text Replacement Tool", "path": "/replace-text" },
+        { "name": "Word Frequency Counter", "path": "/word-frequency-counter" }
+      ]
+    },
+    {
+      "name": "Languages",
+      "items": [
+        { "name": "Deutsch", "path": "/de" },
+        { "name": "Ελληνικά", "path": "/el" },
+        { "name": "English", "path": "/en" },
+        { "name": "Español", "path": "/es" },
+        { "name": "Filipino", "path": "/fil" },
+        { "name": "Français", "path": "/fr" },
+        { "name": "हिन्दी", "path": "/hi" },
+        { "name": "Italiano", "path": "/it" },
+        { "name": "Magyar", "path": "/hu" },
+        { "name": "Polski", "path": "/pl" },
+        { "name": "Português", "path": "/pt" },
+        { "name": "Türkçe", "path": "/tr" },
+        { "name": "Українська", "path": "/ua" }
+      ]
+    }
+  ]
+}

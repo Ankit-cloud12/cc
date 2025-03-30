@@ -1,0 +1,21 @@
+# Cline Rules and Project Intelligence
+
+This file serves as a dynamic logbook of project-specific rules, patterns, and insights discovered during the development of the "Convert Case Text Tool" project. It will be updated as we learn more about the project and user preferences.
+
+## Initial Observations:
+- **Tech Stack:** Project is built with React, TypeScript, Tailwind CSS, and Radix UI. This indicates a modern, component-based approach with a focus on rapid UI development and type safety.
+- **Component Library:** The presence of Radix UI suggests an emphasis on accessible and unstyled UI components, allowing for customization with Tailwind CSS.
+- **Tool-Based Structure:** The project is structured around individual tools, likely implemented as separate components within the `src/components/tools` directory.
+- **UI Components:** Reusable UI components are located in `src/components/ui`, indicating a design system approach.
+
+## To be discovered:
+- Specific implementation patterns for text manipulation tools.
+- User preferences regarding tool features and UI.
+- Project-specific best practices and conventions.
+- Efficient workflows for developing and testing new tools.
+
+## Future Updates:
+- Document critical implementation paths for different tools.
+- Capture user preferences and feedback as they emerge.
+- Refine project-specific patterns and best practices.
+- Track evolution of project decisions and tool usage.
