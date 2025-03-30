@@ -116,12 +116,43 @@ graph LR
 - Responsive design patterns
 - Consistent tool interfaces
 
+### UI Scaling Approaches
+```mermaid
+graph TD
+    A[UI Scaling Approaches] --> B[CSS Transform]
+    A --> C[Container Queries]
+    A --> D[Viewport Units]
+    
+    B --> B1[Pros: Simple implementation]
+    B --> B2[Pros: Consistent scaling ratio]
+    B --> B3[Cons: Portal components rendered outside DOM tree]
+    B --> B4[Cons: May affect pointer events]
+    
+    C --> C1[Pros: Component-specific responses]
+    C --> C2[Cons: Less consistent global scaling]
+    
+    D --> D1[Pros: Native browser sizing]
+    D --> D2[Cons: Less precise control]
+```
+
+#### CSS Transform Implementation
+- Uses scale transform with variable scale factors
+- Scale factors defined in CSS variables for easy updates
+- Media queries for responsive behavior across devices:
+  - Desktop (min-width: 768px): 70% scale (var(--app-scale): 0.7)
+  - Tablet (max-width: 767px, min-width: 481px): 85% scale
+  - Mobile (max-width: 480px): 100% scale (no scaling)
+- Transform origin set to "top center" for predictable expansion
+- Width compensation using calc(100% / var(--app-scale))
+- Special handling for portal-based components (dialogs, popovers)
+
 ### Performance Considerations
 - Component-level code splitting
 - Efficient text processing
 - Optimized re-renders
 - Lazy loading where appropriate
 - Minimal UI overhead
+- Transform-based scaling impacts rendering performance less than re-layout approaches
 
 ### Testing Strategy
 - Component unit tests
@@ -129,3 +160,24 @@ graph LR
 - Header visibility tests
 - Accessibility testing
 - Performance benchmarks
+- Cross-device rendering consistency tests
+- Portal component scaling verification
+
+### Portal Component Challenges
+```mermaid
+graph TD
+    A[DOM Structure] --> B[Main DOM Tree]
+    A --> C[Portal Components]
+    
+    B --> B1[Affected by #root scaling]
+    C --> C1[Rendered outside main DOM tree]
+    C --> C2[Require separate scaling rules]
+    
+    C2 --> D1[Component-specific selectors]
+    C2 --> D2[Role-based targeting]
+    C2 --> D3[State attributes]
+    
+    D1 --> E1[.DrawerContent, .CommandDialog]
+    D2 --> E2[[role="dialog"], [role="menu"]]
+    D3 --> E3[[data-state="open"]]
+```
