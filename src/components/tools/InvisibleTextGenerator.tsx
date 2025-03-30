@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToolLayout } from './ToolLayout';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 
 const INVISIBLE_CHARACTERS = [
   '\u2800', // Braille Pattern Blank
@@ -20,14 +22,15 @@ interface TextStats {
 }
 
 export default function InvisibleTextGenerator() {
-  const [text, setText] = useState('');
-  const [invisibleText, setInvisibleText] = useState('');
+  const [inputText, setText] = useState('');
+  const [outputText, setInvisibleText] = useState('');
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState("about");
   const [stats, setStats] = useState<TextStats>({ chars: 0, words: 0, sentences: 0, lines: 0 });
 
   useEffect(() => {
-    updateStats(invisibleText);
-  }, [invisibleText]);
+    updateStats(outputText);
+  }, [outputText]);
 
   const updateStats = (text: string) => {
     const stats = {
@@ -41,8 +44,8 @@ export default function InvisibleTextGenerator() {
 
   const generateInvisibleText = () => {
     let result = '';
-    const originalText = text; // Store original text for decoding
-    for (let i = 0; i < text.length; i++) {
+    const originalText = inputText; // Store original text for decoding
+    for (let i = 0; i < inputText.length; i++) {
       // Rotate through different invisible characters for variety
       result += INVISIBLE_CHARACTERS[i % INVISIBLE_CHARACTERS.length];
     }
@@ -51,9 +54,9 @@ export default function InvisibleTextGenerator() {
     localStorage.setItem('lastOriginalText', originalText);
   };
 
-  const copyToClipboard = async () => {
+  const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(invisibleText);
+      await navigator.clipboard.writeText(outputText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -61,9 +64,9 @@ export default function InvisibleTextGenerator() {
     }
   };
 
-  const downloadText = () => {
+  const handleDownload = () => {
     const element = document.createElement('a');
-    const file = new Blob([invisibleText], {type: 'text/plain'});
+    const file = new Blob([outputText], {type: 'text/plain'});
     element.href = URL.createObjectURL(file);
     element.download = 'invisible-text.txt';
     document.body.appendChild(element);
@@ -82,117 +85,153 @@ export default function InvisibleTextGenerator() {
     }
   };
 
-  const clearText = () => {
+  const handleClear = () => {
     setText('');
     setInvisibleText('');
   };
 
   return (
     <ToolLayout title="Invisible Text Generator" hideHeader={true}>
-      <div className="container mx-auto p-4 space-y-6">
-        <div className="space-y-4">
-          <h1 className="text-3xl font-bold mb-4">Invisible Text Generator</h1>
-          
-          <p className="text-sm text-gray-300">
-            Generate invisible text that can be copied and pasted anywhere. For each character you enter, 
-            an invisible character will be produced. Perfect for situations where empty space isn't accepted.
-          </p>
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-2">Invisible Text Generator</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Generate invisible text that can be copied and pasted anywhere. For each character you enter, 
+          an invisible character will be produced.
+        </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-200 mb-2">Enter your text:</label>
-              <Textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className="w-full min-h-[200px] p-2 bg-gray-700 text-white rounded-md"
-                placeholder="Type or paste your text here..."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-200 mb-2">Invisible text output:</label>
-              <Textarea
-                value={invisibleText}
-                readOnly
-                className="w-full min-h-[200px] p-2 bg-gray-700 text-white rounded-md"
-                placeholder="Invisible text will appear here..."
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2 justify-center">
-            <Button
-              onClick={generateInvisibleText}
-              disabled={!text}
-              variant="default"
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              Generate Invisible Text
-            </Button>
+        {/* Input and Output Textboxes */}
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
+          <div className="w-full md:w-1/2 flex flex-col">
+            <Textarea
+              placeholder="Type or paste your text here"
+              value={inputText}
+              onChange={(e) => setText(e.target.value)}
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize mb-2"
+            />
             
-            <Button
-              onClick={copyToClipboard}
-              disabled={!invisibleText}
-              variant="default"
-              className="bg-green-600 hover:bg-green-700"
-            >
-              {copied ? 'Copied!' : 'Copy to Clipboard'}
-            </Button>
-
-            <Button
-              onClick={downloadText}
-              disabled={!invisibleText}
-              variant="default"
-              className="bg-purple-600 hover:bg-purple-700"
-            >
-              Download Text
-            </Button>
-
-            <Button
-              onClick={decodeInvisibleText}
-              disabled={!invisibleText}
-              variant="default"
-              className="bg-yellow-600 hover:bg-yellow-700"
-            >
-              Decode Text
-            </Button>
-
-            <Button
-              onClick={clearText}
-              variant="default"
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Clear
-            </Button>
-          </div>
-
-          {invisibleText && (
-            <div className="text-sm text-gray-300 p-4 bg-gray-800 rounded-md">
-              <p className="font-semibold mb-2">Text Statistics:</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>Character Count: {stats.chars}</div>
-                <div>Word Count: {stats.words}</div>
-                <div>Sentence Count: {stats.sentences}</div>
-                <div>Line Count: {stats.lines}</div>
-              </div>
+            {/* Generate Button - Placed below input box */}
+            <div className="flex mb-4">
+              <Button 
+                onClick={generateInvisibleText} 
+                disabled={!inputText}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Generate Invisible Text
+              </Button>
             </div>
-          )}
-
-          <div className="space-y-4 mt-8">
-            <h2 className="text-xl font-semibold">How to Create Invisible Text?</h2>
-            <ol className="list-decimal list-inside space-y-2 text-gray-300">
+          </div>
+          
+          <div className="w-full md:w-1/2 flex flex-col">
+            <Textarea
+              readOnly
+              placeholder="Invisible text will appear here"
+              value={outputText}
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize mb-2"
+            />
+            
+            {/* Actions Row - Placed below output box and aligned right */}
+            <div className="flex flex-wrap gap-2 mb-4 justify-end">
+              <Button 
+                variant="outline" 
+                onClick={handleCopy} 
+                disabled={!outputText}
+                className="border-zinc-600"
+              >
+                {copied ? "Copied!" : "Copy to Clipboard"}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleDownload} 
+                disabled={!outputText}
+                className="border-zinc-600"
+              >
+                Download
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={decodeInvisibleText} 
+                disabled={!outputText}
+                className="border-zinc-600"
+              >
+                Decode Text
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleClear}
+                className="border-zinc-600"
+              >
+                Clear
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Stats Card */}
+        <Card className="p-4 mb-4 bg-zinc-800 border-zinc-700">
+          <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-400">Character Count</span>
+              <span className="text-xl font-semibold">{stats.chars}</span>
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-400">Word Count</span>
+              <span className="text-xl font-semibold">{stats.words}</span>
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-400">Line Count</span>
+              <span className="text-xl font-semibold">{stats.lines}</span>
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-400">Sentence Count</span>
+              <span className="text-xl font-semibold">{stats.sentences}</span>
+            </div>
+          </div>
+        </Card>
+        
+        {/* Information Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
+          <TabsList className="mb-2 bg-zinc-800">
+            <TabsTrigger value="about" className="data-[state=active]:bg-zinc-700">About</TabsTrigger>
+            <TabsTrigger value="usage" className="data-[state=active]:bg-zinc-700">Usage Tips</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="about" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            <h3 className="font-medium mb-2">About Invisible Text Generator</h3>
+            <p className="mb-4">
+              This tool generates invisible text that can be copied and pasted anywhere. For each character you enter, 
+              an invisible Unicode character will be produced. This is perfect for situations where empty space isn't accepted,
+              or when you want to create blank messages, placeholders, or unique text effects.
+            </p>
+            <p className="mb-4">
+              The invisible text uses special Unicode characters (like zero-width spaces and Braille pattern blanks) that 
+              have zero or minimal width but are still valid characters.
+            </p>
+          </TabsContent>
+          
+          <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            <h3 className="font-medium mb-2">How to Create Invisible Text</h3>
+            <ol className="list-decimal pl-5 space-y-2 mb-4">
               <li>Enter your text in the input field on the left</li>
               <li>Click the "Generate Invisible Text" button</li>
               <li>Your invisible text will appear in the output field on the right</li>
               <li>Click "Copy to Clipboard" to copy the invisible text</li>
               <li>Paste the invisible text wherever you need it</li>
+              <li>If you want to recover your original text, use the "Decode Text" button</li>
             </ol>
-          </div>
-
-          <div className="text-sm text-gray-400 mt-4">
-            <p>Note: The invisible text generated contains special Unicode characters that appear as empty space but are actually valid characters. This makes them perfect for use in situations where empty spaces aren't accepted.</p>
-          </div>
-        </div>
+            
+            <p className="text-sm text-gray-400">
+              Note: While the text is invisible, it still takes up space electronically. The invisible characters 
+              are actual valid characters in Unicode, and systems will recognize them as such. This makes them perfect 
+              for use in places where completely empty messages might not be allowed.
+            </p>
+          </TabsContent>
+        </Tabs>
       </div>
     </ToolLayout>
   );

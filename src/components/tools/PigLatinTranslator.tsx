@@ -3,6 +3,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToolLayout } from "./ToolLayout";
 
 const PigLatinTranslator = () => {
   const [inputText, setInputText] = useState("");
@@ -11,6 +14,9 @@ const PigLatinTranslator = () => {
     "englishToPigLatin"
   );
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState("about");
+  
+  // Statistics
   const [charCount, setCharCount] = useState(0);
   const [wordCount, setWordCount] = useState(0);
   const [sentenceCount, setSentenceCount] = useState(0);
@@ -19,7 +25,8 @@ const PigLatinTranslator = () => {
   // Update counts whenever input text changes
   useEffect(() => {
     updateCounts(inputText);
-  }, [inputText]);
+    translate(inputText);
+  }, [inputText, mode]);
 
   const updateCounts = (text: string) => {
     setCharCount(text.length);
@@ -35,7 +42,6 @@ const PigLatinTranslator = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
     setInputText(newText);
-    translate(newText);
   };
 
   const isVowel = (char: string): boolean => {
@@ -166,102 +172,212 @@ const PigLatinTranslator = () => {
     setSentenceCount(0);
     setLineCount(0);
   };
+  
+  const handleDownload = () => {
+    if (!outputText) return;
+    
+    const element = document.createElement("a");
+    const file = new Blob([outputText], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = mode === "englishToPigLatin" ? "pig-latin.txt" : "english.txt";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
 
   return (
-    <div className="w-full">
-      <h1 className="text-3xl font-bold mb-2">Pig Latin Translator</h1>
-      <p className="text-gray-300 mb-6">
-        Convert text to Pig Latin or translate Pig Latin back to regular English.
-      </p>
+    <ToolLayout title="Pig Latin Translator" hideHeader={true}>
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-2">Pig Latin Translator</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Convert text to Pig Latin or translate Pig Latin back to regular English.
+        </p>
 
-      <div className="mb-6">
-        <RadioGroup
-          defaultValue="englishToPigLatin"
-          value={mode}
-          onValueChange={(value) =>
-            handleModeChange(value as "englishToPigLatin" | "pigLatinToEnglish")
-          }
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="englishToPigLatin" id="englishToPigLatin" />
-            <Label htmlFor="englishToPigLatin">English to Pig Latin</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="pigLatinToEnglish" id="pigLatinToEnglish" />
-            <Label htmlFor="pigLatinToEnglish">Pig Latin to English</Label>
-          </div>
-        </RadioGroup>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex flex-col flex-1">
-          <Textarea
-            placeholder={
-              mode === "englishToPigLatin"
-                ? "Type or paste your English text here"
-                : "Type or paste Pig Latin text here"
+        {/* Translation Mode Selection */}
+        <div className="mb-6">
+          <RadioGroup
+            defaultValue="englishToPigLatin"
+            value={mode}
+            onValueChange={(value) =>
+              handleModeChange(value as "englishToPigLatin" | "pigLatinToEnglish")
             }
-            className="w-full min-h-[200px] bg-zinc-700 text-white border-zinc-600 mb-2 p-4 rounded"
-            value={inputText}
-            onChange={handleInputChange}
-          />
-          <div className="text-sm text-gray-400 mb-4">
-            Character Count: {charCount} | Word Count: {wordCount} | Sentence Count: {sentenceCount} | Line Count: {lineCount}
-          </div>
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="englishToPigLatin" id="englishToPigLatin" />
+              <Label htmlFor="englishToPigLatin">English to Pig Latin</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="pigLatinToEnglish" id="pigLatinToEnglish" />
+              <Label htmlFor="pigLatinToEnglish">Pig Latin to English</Label>
+            </div>
+          </RadioGroup>
         </div>
 
-        <div className="flex flex-col flex-1">
-          <Textarea
-            readOnly
-            className="w-full min-h-[200px] bg-zinc-700 text-white border-zinc-600 mb-4 p-4 rounded"
-            value={outputText}
-            placeholder={
-              mode === "englishToPigLatin"
-                ? "Pig Latin translation will appear here"
-                : "English translation will appear here"
-            }
-          />
+        {/* Input and Output Textboxes */}
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
+          <div className="w-full md:w-1/2">
+            <Textarea
+              placeholder={
+                mode === "englishToPigLatin"
+                  ? "Type or paste your English text here"
+                  : "Type or paste Pig Latin text here"
+              }
+              value={inputText}
+              onChange={handleInputChange}
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize"
+            />
+          </div>
+          
+          <div className="w-full md:w-1/2 flex flex-col">
+            <Textarea
+              readOnly
+              placeholder={
+                mode === "englishToPigLatin"
+                  ? "Pig Latin translation will appear here"
+                  : "English translation will appear here"
+              }
+              value={outputText}
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize mb-2"
+            />
+            
+            {/* Actions Row - Right aligned */}
+            <div className="flex flex-wrap gap-2 mb-4 justify-end">
+              <Button 
+                variant="outline" 
+                onClick={handleCopy} 
+                disabled={!outputText}
+                className="border-zinc-600"
+              >
+                {copied ? "Copied!" : "Copy to Clipboard"}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleDownload} 
+                disabled={!outputText}
+                className="border-zinc-600"
+              >
+                Download
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleClear}
+                className="border-zinc-600"
+              >
+                Clear
+              </Button>
+            </div>
+          </div>
         </div>
+        
+        {/* Stats Card */}
+        <Card className="p-4 mb-4 bg-zinc-800 border-zinc-700">
+          <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-400">Character Count</span>
+              <span className="text-xl font-semibold">{charCount}</span>
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-400">Word Count</span>
+              <span className="text-xl font-semibold">{wordCount}</span>
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-400">Sentence Count</span>
+              <span className="text-xl font-semibold">{sentenceCount}</span>
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-400">Line Count</span>
+              <span className="text-xl font-semibold">{lineCount}</span>
+            </div>
+          </div>
+        </Card>
+        
+        {/* Information Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
+          <TabsList className="mb-2 bg-zinc-800">
+            <TabsTrigger value="about" className="data-[state=active]:bg-zinc-700">About</TabsTrigger>
+            <TabsTrigger value="rules" className="data-[state=active]:bg-zinc-700">Pig Latin Rules</TabsTrigger>
+            <TabsTrigger value="usage" className="data-[state=active]:bg-zinc-700">Usage Tips</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="about" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            <h3 className="font-medium mb-2">About Pig Latin Translator</h3>
+            <p className="mb-4">
+              Pig Latin is a language game that alters English words according to simple rules. It is commonly 
+              used by children as a form of play or to create a "secret language" that others might not understand.
+            </p>
+            <p className="mb-4">
+              This translator allows you to convert between English and Pig Latin instantly. Simply type or paste 
+              your text in the input box, select the translation direction, and see the converted text appear 
+              immediately. The tool handles proper capitalization, punctuation, and special cases to ensure accurate
+              translations.
+            </p>
+            <p className="mb-4">
+              Whether you're learning about language patterns, having fun with friends, or using it for 
+              educational purposes, our Pig Latin translator provides an easy way to convert text between
+              these two forms.
+            </p>
+          </TabsContent>
+          
+          <TabsContent value="rules" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            <h3 className="font-medium mb-2">Pig Latin Rules</h3>
+            <p className="mb-4">
+              Pig Latin follows these basic rules for transforming words:
+            </p>
+            <ol className="list-decimal pl-5 space-y-2 mb-4">
+              <li>
+                <strong>Words beginning with consonants:</strong> Move the consonant or consonant cluster to the end of the word and add "ay".<br/>
+                Examples:
+                <ul className="list-disc pl-8 mt-1">
+                  <li>"pig" → "igpay"</li>
+                  <li>"banana" → "ananabay"</li>
+                  <li>"trash" → "ashtray"</li>
+                  <li>"string" → "ingstray"</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Words beginning with vowels:</strong> Simply add "way" to the end of the word.<br/>
+                Examples:
+                <ul className="list-disc pl-8 mt-1">
+                  <li>"eat" → "eatway"</li>
+                  <li>"apple" → "appleway"</li>
+                  <li>"oatmeal" → "oatmealway"</li>
+                </ul>
+              </li>
+            </ol>
+            <p className="text-sm text-gray-400">
+              Note: While these are the standard rules, variations do exist. Some versions add "yay" or "way" to 
+              vowel-beginning words, while others use "hay" or have special rules for certain consonant combinations.
+              This translator uses the most common implementation.
+            </p>
+          </TabsContent>
+          
+          <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            <h3 className="font-medium mb-2">Usage Tips</h3>
+            <ul className="list-disc pl-5 space-y-2 mb-4">
+              <li>Select "English to Pig Latin" to convert regular English text into Pig Latin</li>
+              <li>Select "Pig Latin to English" to attempt converting Pig Latin back to regular English</li>
+              <li>Type or paste text in the left box to see the translation appear in the right box</li>
+              <li>The translator preserves capitalization (e.g., "Hello" becomes "Ellohay")</li>
+              <li>Punctuation and spacing are maintained in their original positions</li>
+              <li>Use the "Copy to Clipboard" button to easily share your translated text</li>
+              <li>Use the "Download" button to save your translation as a text file</li>
+              <li>Try translating a paragraph of text to see how pig latin looks in longer form</li>
+            </ul>
+            <p className="text-sm text-gray-400">
+              Fun fact: Pig Latin has been used in popular culture for decades, appearing in songs, movies, and 
+              TV shows. While it's not actually a real language, it follows consistent patterns that make it an 
+              interesting introduction to linguistic concepts for children.
+            </p>
+          </TabsContent>
+        </Tabs>
       </div>
-
-      <div className="grid grid-cols-2 gap-2 mb-4">
-        <Button
-          variant="outline"
-          className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
-          onClick={handleCopy}
-          disabled={!outputText}
-        >
-          {copied ? "Copied!" : "Copy to Clipboard"}
-        </Button>
-        <Button
-          variant="outline"
-          className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
-          onClick={handleClear}
-        >
-          Clear
-        </Button>
-      </div>
-
-      <div className="mt-8 mb-12">
-        <h2 className="text-xl font-bold mb-4">About Pig Latin</h2>
-        <p className="text-gray-300 mb-4">
-          Pig Latin is a language game that alters English words according to a simple set of rules. It is commonly used by children as a form of play or to create a "secret language."
-        </p>
-        <p className="text-gray-300 mb-4">
-          <span className="font-semibold">The basic rules of Pig Latin are:</span>
-        </p>
-        <ul className="list-disc list-inside text-gray-300 mb-4 space-y-2">
-          <li>For words that begin with consonant sounds, move the consonant or consonant cluster to the end of the word and add "ay".<br />
-            Example: "pig" → "igpay", "banana" → "ananabay", "trash" → "ashtray"</li>
-          <li>For words that begin with vowel sounds, simply add "way" to the end of the word.<br />
-            Example: "eat" → "eatway", "apple" → "appleway", "under" → "underway"</li>
-        </ul>
-        <p className="text-gray-300 mb-4">
-          This translator attempts to convert text between English and Pig Latin while preserving capitalization, punctuation, and handling special cases.
-        </p>
-      </div>
-    </div>
+    </ToolLayout>
   );
 };
 

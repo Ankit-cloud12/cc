@@ -3,37 +3,34 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToolLayout } from "./ToolLayout";
 
-const LetterCharacterRemovalTool = () => {
+const LetterCharacterRemovalTool: React.FC = () => {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [lettersToRemove, setLettersToRemove] = useState("");
   const [isCaseSensitive, setIsCaseSensitive] = useState(false);
   const [cleanUpSpaces, setCleanUpSpaces] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [textStats, setTextStats] = useState({
-    charCount: 0,
-    wordCount: 0,
-    sentenceCount: 0,
-    lineCount: 0,
-  });
+  const [activeTab, setActiveTab] = useState("settings");
+  
+  // Statistics
+  const [charCount, setCharCount] = useState(0);
+  const [wordCount, setWordCount] = useState(0);
+  const [sentenceCount, setSentenceCount] = useState(0);
+  const [lineCount, setLineCount] = useState(0);
 
   useEffect(() => {
     updateStats(inputText);
   }, [inputText]);
 
-  const updateStats = (text) => {
-    const charCount = text.length;
-    const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
-    const sentenceCount = text.trim() === "" ? 0 : text.split(/[.!?]+/).filter(Boolean).length;
-    const lineCount = text.trim() === "" ? 0 : text.split(/\r\n|\r|\n/).filter(Boolean).length;
-
-    setTextStats({
-      charCount,
-      wordCount,
-      sentenceCount,
-      lineCount,
-    });
+  const updateStats = (text: string) => {
+    setCharCount(text.length);
+    setWordCount(text.trim() === "" ? 0 : text.trim().split(/\s+/).length);
+    setSentenceCount(text.trim() === "" ? 0 : text.split(/[.!?]+/).filter(Boolean).length);
+    setLineCount(text.trim() === "" ? 0 : text.split(/\r\n|\r|\n/).filter(Boolean).length);
   };
 
   const removeLetters = () => {
@@ -66,24 +63,25 @@ const LetterCharacterRemovalTool = () => {
     setOutputText(result);
   };
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(outputText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
+  const handleCopy = () => {
+    navigator.clipboard.writeText(outputText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleClear = () => {
     setInputText("");
     setOutputText("");
     setLettersToRemove("");
-    updateStats("");
+    setCharCount(0);
+    setWordCount(0);
+    setSentenceCount(0);
+    setLineCount(0);
   };
 
   const handleDownload = () => {
+    if (!outputText) return;
+    
     const element = document.createElement("a");
     const file = new Blob([outputText], { type: "text/plain" });
     element.href = URL.createObjectURL(file);
@@ -94,171 +92,227 @@ const LetterCharacterRemovalTool = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-6xl">
-      <h1 className="text-3xl font-bold mb-4">Remove Specific Letters and Characters from Text</h1>
-      
-      <div className="bg-zinc-800/50 p-5 rounded-lg mb-6">
-        <p className="text-gray-300 mb-4">
-          Our powerful character removal tool helps you transform text by precisely eliminating unwanted letters, 
-          characters, or symbols. Perfect for data cleaning, formatting adjustments, or creative text manipulation.
+    <ToolLayout title="Remove Letters & Characters" hideHeader={true}>
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-2">Remove Specific Letters and Characters</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Transform your text by precisely eliminating unwanted letters, characters, or symbols.
         </p>
-        <p className="text-gray-300">
-          Simply input your text, specify which characters to remove, and instantly get refined results that 
-          maintain the integrity of your content while removing only what you don't need.
-        </p>
-      </div>
 
-
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="col-span-2">
-          <div className="bg-zinc-800 p-4 rounded-md shadow-md mb-4">
-            <h2 className="text-lg font-semibold mb-2">Input Text</h2>
+        {/* Main Content Area */}
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
+          {/* Input Column */}
+          <div className="w-full md:w-1/2">
             <Textarea
               placeholder="Type or paste your text here"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              className="min-h-[200px] bg-zinc-700 text-white border-zinc-600 mb-2"
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize"
             />
-            <div className="text-sm text-gray-400">
-              Character Count: {textStats.charCount} | Word Count: {textStats.wordCount} | 
-              Sentence Count: {textStats.sentenceCount} | Line Count: {textStats.lineCount}
-            </div>
           </div>
           
-          <div className="bg-zinc-800 p-4 rounded-md shadow-md">
-            <h2 className="text-lg font-semibold mb-2">Output Text</h2>
+          {/* Output Column */}
+          <div className="w-full md:w-1/2 flex flex-col">
             <Textarea
               readOnly
-              value={outputText}
               placeholder="Modified text will appear here"
-              className="min-h-[200px] bg-zinc-700 text-white border-zinc-600 mb-4"
+              value={outputText}
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize mb-2"
             />
             
-            <div className="flex flex-wrap gap-2">
+            {/* Actions Row - Right aligned */}
+            <div className="flex flex-wrap gap-2 mb-4 justify-end">
               <Button 
-                variant="outline"
-                className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
-                onClick={handleCopy}
+                variant="outline" 
+                onClick={handleCopy} 
                 disabled={!outputText}
+                className="border-zinc-600"
               >
                 {copied ? "Copied!" : "Copy to Clipboard"}
               </Button>
-              <Button
-                variant="outline"
-                className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
-                onClick={handleClear}
-              >
-                Clear All
-              </Button>
-              <Button
-                variant="outline"
-                className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
-                onClick={handleDownload}
+              
+              <Button 
+                variant="outline" 
+                onClick={handleDownload} 
                 disabled={!outputText}
+                className="border-zinc-600"
               >
-                Download Text
+                Download
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleClear}
+                className="border-zinc-600"
+              >
+                Clear
               </Button>
             </div>
           </div>
         </div>
         
-        <div className="col-span-1">
-          <div className="bg-zinc-800 p-4 rounded-md shadow-md mb-4">
-            <h2 className="text-lg font-semibold mb-4">Letters to Remove</h2>
-            <Input
-              type="text"
-              placeholder="e.g. aeiou123"
-              value={lettersToRemove}
-              onChange={(e) => setLettersToRemove(e.target.value)}
-              className="mb-4 bg-zinc-700 text-white border-zinc-600"
-            />
-            <p className="text-sm text-gray-400 mb-4">
-              Remove these letters from text.
-            </p>
-            
-            <div className="flex items-center space-x-2 mb-4">
-              <Checkbox
-                id="case-sensitive"
-                checked={isCaseSensitive}
-                onCheckedChange={(checked) => setIsCaseSensitive(!!checked)}
-              />
-              <div>
-                <label
-                  htmlFor="case-sensitive"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Case Sensitive Removal
-                </label>
-                <p className="text-sm text-muted-foreground text-gray-400">
-                  Delete uppercase and lowercase letters separately.
+        {/* Settings and Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          {/* Settings Column */}
+          <div className="col-span-2">
+            <Card className="p-4 bg-zinc-800 border-zinc-700">
+              <h2 className="text-lg font-semibold mb-4">Removal Settings</h2>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Letters to Remove</label>
+                <Input
+                  type="text"
+                  placeholder="e.g. aeiou123"
+                  value={lettersToRemove}
+                  onChange={(e) => setLettersToRemove(e.target.value)}
+                  className="bg-zinc-700 text-white border-zinc-600"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Enter the characters you want to remove
                 </p>
               </div>
-            </div>
-            
-            <div className="flex items-center space-x-2 mb-6">
-              <Checkbox
-                id="clean-spaces"
-                checked={cleanUpSpaces}
-                onCheckedChange={(checked) => setCleanUpSpaces(!!checked)}
-              />
-              <div>
-                <label
-                  htmlFor="clean-spaces"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Clean Up Spaces
-                </label>
-                <p className="text-sm text-muted-foreground text-gray-400">
-                  If two connected words are completely deleted, then
-                  remove the extra space that was formed between them.
-                </p>
+              
+              <div className="flex items-center space-x-2 mb-4">
+                <Checkbox
+                  id="case-sensitive"
+                  checked={isCaseSensitive}
+                  onCheckedChange={(checked) => setIsCaseSensitive(!!checked)}
+                />
+                <div>
+                  <label
+                    htmlFor="case-sensitive"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Case Sensitive Removal
+                  </label>
+                  <p className="text-xs text-gray-400">
+                    Delete uppercase and lowercase letters separately
+                  </p>
+                </div>
               </div>
-            </div>
-            
-            <Button
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white"
-              onClick={removeLetters}
-              disabled={!inputText || !lettersToRemove}
-            >
-              Remove Characters
-            </Button>
+              
+              <div className="flex items-center space-x-2 mb-6">
+                <Checkbox
+                  id="clean-spaces"
+                  checked={cleanUpSpaces}
+                  onCheckedChange={(checked) => setCleanUpSpaces(!!checked)}
+                />
+                <div>
+                  <label
+                    htmlFor="clean-spaces"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Clean Up Spaces
+                  </label>
+                  <p className="text-xs text-gray-400">
+                    Remove extra spaces between words after character removal
+                  </p>
+                </div>
+              </div>
+              
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white"
+                onClick={removeLetters}
+                disabled={!inputText || !lettersToRemove}
+              >
+                Remove Characters
+              </Button>
+            </Card>
           </div>
           
-          <div className="bg-zinc-800 p-4 rounded-md shadow-md">
-            <h2 className="text-xl font-bold mb-4">How It Works</h2>
-            <ul className="list-disc pl-5 space-y-2 text-gray-300 text-sm">
+          {/* Stats Card */}
+          <div className="col-span-1">
+            <Card className="p-4 bg-zinc-800 border-zinc-700">
+              <h3 className="font-medium mb-3">Text Statistics</h3>
+              <div className="space-y-3">
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Character Count</span>
+                  <span className="text-xl font-semibold">{charCount}</span>
+                </div>
+                
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Word Count</span>
+                  <span className="text-xl font-semibold">{wordCount}</span>
+                </div>
+                
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Sentence Count</span>
+                  <span className="text-xl font-semibold">{sentenceCount}</span>
+                </div>
+                
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Line Count</span>
+                  <span className="text-xl font-semibold">{lineCount}</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+        
+        {/* Information Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
+          <TabsList className="mb-2 bg-zinc-800">
+            <TabsTrigger value="about" className="data-[state=active]:bg-zinc-700">About</TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:bg-zinc-700">How It Works</TabsTrigger>
+            <TabsTrigger value="usage" className="data-[state=active]:bg-zinc-700">Usage Tips</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="about" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            <h3 className="font-medium mb-2">About Character Removal Tool</h3>
+            <p className="mb-4">
+              With our intuitive character removal tool, you can transform your text by selectively removing letters, 
+              characters, or symbols. Whether you need to clean up messy data, remove unwanted formatting, or modify 
+              text for specific requirements, our tool makes it quick and simple to remove precisely what you don't 
+              need while preserving everything else.
+            </p>
+            <p className="mb-4">
+              This tool is great for:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 mb-4">
+              <li>Cleaning up formatted text</li>
+              <li>Removing specific characters from datasets</li>
+              <li>Stripping unwanted symbols from copied content</li>
+              <li>Creating word puzzles by removing certain letters</li>
+              <li>Data preparation and text processing workflows</li>
+            </ul>
+          </TabsContent>
+          
+          <TabsContent value="settings" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            <h3 className="font-medium mb-2">How The Tool Works</h3>
+            <p className="mb-4">
+              Our character removal tool works by identifying and eliminating specific characters from your text:
+            </p>
+            <ol className="list-decimal pl-5 space-y-2 mb-4">
               <li>Enter the characters you want to remove in the "Letters to Remove" box</li>
-              <li>Choose whether the removal should be case-sensitive</li>
+              <li>Choose whether the removal should be case-sensitive with the checkbox</li>
               <li>Decide if you want to clean up extra spaces after removal</li>
               <li>Click "Remove Characters" to process your text</li>
               <li>Copy or download the modified result</li>
+            </ol>
+            <p className="text-sm text-gray-400">
+              For example, after removing the letters "ou" from the phrase "You Can", you'll get the text "Y Can".
+              If case sensitivity is enabled, only the exact characters specified will be removed.
+            </p>
+          </TabsContent>
+          
+          <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            <h3 className="font-medium mb-2">Usage Tips</h3>
+            <ul className="list-disc pl-5 space-y-2 mb-4">
+              <li>To remove vowels, enter "aeiou" in the Letters to Remove field</li>
+              <li>If you need to remove punctuation, enter punctuation marks like ",.!?;"</li>
+              <li>Use case sensitivity when you want to remove only lowercase or only uppercase versions of letters</li>
+              <li>When removing multiple characters that might create double spaces, keep "Clean Up Spaces" enabled</li>
+              <li>Special characters like \ [ ] and ^ may need a backslash before them (e.g., \[) to work properly</li>
+              <li>You can combine character removal with other text tools for more complex transformations</li>
             </ul>
-          </div>
-        </div>
+            <p className="text-sm text-gray-400">
+              Note: When removing characters that are part of special sequences (like HTML tags), be careful not to
+              create unintended side effects in your text structure.
+            </p>
+          </TabsContent>
+        </Tabs>
       </div>
-      
-      <div className="mt-8 mb-8 bg-zinc-800 p-6 rounded-md">
-        <h2 className="text-2xl font-bold mb-4">Remove Specific Letters and Characters from Text</h2>
-        <p className="text-gray-300 mb-4">
-          With our intuitive character removal tool, you can transform your text by selectively removing letters, 
-          characters, or symbols. Whether you need to clean up messy data, remove unwanted formatting, or modify 
-          text for specific requirements, our tool makes it quick and simple to remove precisely what you don't 
-          need while preserving everything else.
-        </p>
-        <p className="text-gray-300 mb-4">
-          You can paste a word, a sentence, a paragraph, or even large blocks of text into the input, and completely 
-          remove the specified character (or several characters) from it. Simply list the symbols to be deleted in 
-          the option, and the program will find all these symbols in the text and remove them.
-        </p>
-        <p className="text-gray-300">
-          For example, after removing the letters "ou" from the phrase "You Can", you'll get the text "Y Can".
-          The letters to be removed can be set to be case-sensitive with the "Case Sensitive Removal" option. 
-          We've also included the "Clean Up Spaces" option to handle cases where all letters in consecutive 
-          words are removed, preventing double or triple spaces in the result.
-        </p>
-      </div>
-    </div>
+    </ToolLayout>
   );
 };
 

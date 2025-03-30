@@ -474,58 +474,60 @@ const HexToTextConverter = () => {
               </Button>
             </div>
             
-            <div>
-              <Label className="text-gray-200 mb-2 block">
-                {direction === "hexToText" ? "Hex Input" : "Text Input"}
-              </Label>
-              <Textarea 
-                placeholder={direction === "hexToText" 
-                  ? "Enter hex values (e.g., 48 65 6c 6c 6f)" 
-                  : "Enter text to convert to hex"
-                }
-                className="min-h-[200px] bg-zinc-700 text-white border-zinc-600 resize-y font-mono"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-              />
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="w-full md:w-1/2">
+                <Label className="text-gray-200 mb-2 block">
+                  {direction === "hexToText" ? "Hex Input" : "Text Input"}
+                </Label>
+                <Textarea 
+                  placeholder={direction === "hexToText" 
+                    ? "Enter hex values (e.g., 48 65 6c 6c 6f)" 
+                    : "Enter text to convert to hex"
+                  }
+                  className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 resize font-mono"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                />
+                
+                {error && highlightPosition !== null && (
+                  <div className="text-red-400 text-sm mt-1">
+                    Error at position: {highlightPosition}
+                  </div>
+                )}
+              </div>
               
-              {error && highlightPosition !== null && (
-                <div className="text-red-400 text-sm mt-1">
-                  Error at position: {highlightPosition}
-                </div>
-              )}
+              <div className="w-full md:w-1/2">
+                <Label className="text-gray-200 mb-2 block">
+                  {direction === "hexToText" ? "Text Output" : "Hex Output"}
+                </Label>
+                <Textarea
+                  readOnly
+                  className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 resize font-mono"
+                  value={outputText}
+                  placeholder={
+                    direction === "hexToText"
+                      ? "Decoded text will appear here"
+                      : "Encoded hex will appear here"
+                  }
+                />
+              </div>
             </div>
             
-            <div>
-              <Label className="text-gray-200 mb-2 block">
-                {direction === "hexToText" ? "Text Output" : "Hex Output"}
-              </Label>
-              <Textarea
-                readOnly
-                className="min-h-[150px] bg-zinc-700 text-white border-zinc-600 resize-y font-mono"
-                value={outputText}
-                placeholder={
-                  direction === "hexToText"
-                    ? "Decoded text will appear here"
-                    : "Encoded hex will appear here"
-                }
-              />
-              
-              {outputText && (
-                <div className="text-sm text-gray-400 mt-1">
-                  Length: {outputText.length} {direction === "hexToText" ? "characters" : "bytes"}
-                  {direction === "textToHex" && options.byteDisplay === "base16" && (
-                    <span className="ml-2">
-                      Format: {
-                        options.hexFormat === "spaced" ? "Space-separated" :
-                        options.hexFormat === "prefixed" ? "Prefixed with 0x" :
-                        options.hexFormat === "continuous" ? "Continuous" :
-                        "Array notation"
-                      }
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
+            {outputText && (
+              <div className="text-sm text-gray-400 mt-1">
+                Length: {outputText.length} {direction === "hexToText" ? "characters" : "bytes"}
+                {direction === "textToHex" && options.byteDisplay === "base16" && (
+                  <span className="ml-2">
+                    Format: {
+                      options.hexFormat === "spaced" ? "Space-separated" :
+                      options.hexFormat === "prefixed" ? "Prefixed with 0x" :
+                      options.hexFormat === "continuous" ? "Continuous" :
+                      "Array notation"
+                    }
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </TabsContent>
 
@@ -544,7 +546,7 @@ const HexToTextConverter = () => {
               </Label>
               <Textarea
                 readOnly
-                className="min-h-[150px] bg-zinc-700 text-white border-zinc-600 resize-y font-mono"
+                className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 resize font-mono"
                 value={outputText}
               />
             </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -191,6 +192,16 @@ const Base64Converter = () => {
     setHistory([]);
   };
   
+  const handleSwapDirection = () => {
+    // Swap the input and output
+    const tempText = inputText;
+    setInputText(outputText);
+    setOutputText(tempText);
+    
+    // Also swap the direction
+    setMode(mode === "encode" ? "decode" : "encode");
+  };
+  
   // About content
   const aboutContent = (
     <>
@@ -274,7 +285,7 @@ const Base64Converter = () => {
 
         <TabsContent value="text">
           <div className="space-y-6">
-            <div className="mb-6">
+            <div className="flex justify-between items-center mb-6">
               <RadioGroup
                 value={mode}
                 onValueChange={(value) => handleModeChange(value as "encode" | "decode")}
@@ -289,34 +300,45 @@ const Base64Converter = () => {
                   <Label htmlFor="decode" className="text-gray-200">Decode from Base64</Label>
                 </div>
               </RadioGroup>
+              
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="text-xs bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-600"
+                onClick={handleSwapDirection}
+              >
+                ↔ Swap Direction
+              </Button>
             </div>
             
-            <div>
-              <Label className="text-gray-200 mb-2 block">Input</Label>
-              <Textarea
-                placeholder={
-                  mode === "encode"
-                    ? "Type or paste your text here to encode"
-                    : "Type or paste Base64 encoded text here to decode"
-                }
-                className="min-h-[200px] bg-zinc-700 text-white border-zinc-600 resize-y"
-                value={inputText}
-                onChange={handleInputChange}
-              />
-            </div>
-            
-            <div>
-              <Label className="text-gray-200 mb-2 block">Output</Label>
-              <Textarea
-                readOnly
-                className="min-h-[150px] bg-zinc-700 text-white border-zinc-600 resize-y"
-                value={outputText}
-                placeholder={
-                  mode === "encode"
-                    ? "Base64 encoded text will appear here"
-                    : "Decoded text will appear here"
-                }
-              />
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="w-full md:w-1/2">
+                <Label className="text-gray-200 mb-2 block">Input</Label>
+                <Textarea
+                  placeholder={
+                    mode === "encode"
+                      ? "Type or paste your text here to encode"
+                      : "Type or paste Base64 encoded text here to decode"
+                  }
+                  className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 resize"
+                  value={inputText}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div className="w-full md:w-1/2">
+                <Label className="text-gray-200 mb-2 block">Output</Label>
+                <Textarea
+                  readOnly
+                  className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 resize"
+                  value={outputText}
+                  placeholder={
+                    mode === "encode"
+                      ? "Base64 encoded text will appear here"
+                      : "Decoded text will appear here"
+                  }
+                />
+              </div>
             </div>
           </div>
         </TabsContent>
@@ -334,7 +356,7 @@ const Base64Converter = () => {
               <Label className="text-gray-200 mb-2 block">Output</Label>
               <Textarea
                 readOnly
-                className="min-h-[150px] bg-zinc-700 text-white border-zinc-600 resize-y"
+                className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 resize"
                 value={outputText}
               />
             </div>
@@ -412,7 +434,7 @@ const Base64Converter = () => {
               <Label className="text-gray-200 mb-2 block">Output</Label>
               <Textarea
                 readOnly
-                className="min-h-[150px] bg-zinc-700 text-white border-zinc-600 resize-y"
+                className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 resize"
                 value={outputText}
               />
             </div>

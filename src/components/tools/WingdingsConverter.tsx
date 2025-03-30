@@ -433,15 +433,6 @@ const WingdingsConverter = () => {
           </div>
         </div>
 
-        {/* Feedback Section */}
-        <div className="mb-12 text-center">
-          <p className="mb-2">Was this helpful?</p>
-          <div className="flex justify-center space-x-4">
-            <Button variant="outline" className="border-green-500 text-green-500 hover:bg-green-500/10">Yes</Button>
-            <Button variant="outline" className="border-red-500 text-red-500 hover:bg-red-500/10">No</Button>
-          </div>
-        </div>
-
         {/* Information Sections */}
         <div className="space-y-8 mb-12">
           <div className="prose max-w-none text-gray-300">
