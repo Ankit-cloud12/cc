@@ -72,12 +72,10 @@ const StrikethroughTextGenerator = () => {
   return (
     <ToolLayout title="Strikethrough Text Generator" hideHeader={true}>
       <div className="container mx-auto p-4">
-        <div className="bg-gradient-to-r from-purple-700 via-blue-600 to-pink-600 text-white p-6 rounded-lg mb-6">
-          <h1 className="text-4xl font-bold mb-2">Strikethrough Text Generator</h1>
-          <p className="text-lg opacity-90">
-            Create strikethrough text that works everywhere. Perfect for indicating deleted content or adding unique style to your text.
-          </p>
-        </div>
+        <h1 className="text-3xl font-bold mb-2">Strikethrough Text Generator</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Create strikethrough text that works everywhere. Perfect for indicating deleted content or adding unique style to your text.
+        </p>
 
         {/* Input and Output Textboxes */}
         <div className="flex flex-col md:flex-row gap-4 mb-4">

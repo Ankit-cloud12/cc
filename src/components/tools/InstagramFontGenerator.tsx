@@ -123,10 +123,13 @@ const InstagramFontGenerator = () => {
   return (
     <ToolLayout title="Instagram Fonts Generator" hideHeader={true}>
       <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-4">Instagram Fonts Generator</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Input Text</h2>
+        <h1 className="text-3xl font-bold mb-2">Instagram Fonts Generator</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Transform your text into various stylish Instagram fonts and symbols.
+        </p>
+
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
+          <div className="w-full md:w-1/2">
             <Textarea
               placeholder="Type or paste your content here"
               value={inputText}
@@ -134,20 +137,38 @@ const InstagramFontGenerator = () => {
                 setInputText(e.target.value);
                 generateFonts(e.target.value);
               }}
-              className="min-h-[300px] mb-4"
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize"
             />
           </div>
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Output Text</h2>
+          
+          <div className="w-full md:w-1/2 space-y-2">
             <Textarea
               readOnly
               placeholder="Styled text will appear here"
               value={outputText}
-              className="min-h-[300px] mb-4"
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize"
             />
-            <Button onClick={handleCopy}>
-              {copied ? "Copied!" : "Copy to Clipboard"}
-            </Button>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopy}
+                disabled={!outputText}
+                className="border-zinc-600"
+              >
+                {copied ? "Copied!" : "Copy Output"}
+              </Button>
+              
+              <Button
+                onClick={() => {
+                  setInputText("");
+                  setOutputText("");
+                }}
+                className="border-zinc-600"
+                variant="outline"
+              >
+                Clear All
+              </Button>
+            </div>
           </div>
         </div>
       </div>
