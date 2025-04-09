@@ -45,7 +45,7 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="bg-zinc-800 text-white border-t border-zinc-700 max-h-[85vh]">
+      <DrawerContent className="bg-zinc-800 text-white border-t border-zinc-700 max-h-[90vh]">
         <DrawerHeader className="border-b border-zinc-700 flex items-center justify-between">
           <DrawerTitle className="text-white text-xl">Menu</DrawerTitle>
           <DrawerClose asChild>
@@ -61,15 +61,15 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
         </DrawerHeader>
         
         <div className="p-4 border-b border-zinc-700">
-          <Button 
-            variant="outline" 
-            className="w-full bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600 flex items-center gap-2"
+          <Button
+            variant="outline"
+            className="w-full bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600 flex items-center justify-center gap-3 h-12 text-base"
             onClick={() => {
               onOpenSearch();
               onOpenChange(false);
             }}
           >
-            <Search size={16} />
+            <Search size={20} />
             <span>Search tools...</span>
           </Button>
         </div>
@@ -88,7 +88,7 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
               >
                 <AccordionTrigger 
                   onClick={() => toggleCategory(category.name)}
-                  className="px-4 py-3 text-white hover:bg-zinc-700 font-medium"
+                  className="px-4 py-4 text-white hover:bg-zinc-700 font-medium text-base"
                 >
                   {category.name}
                 </AccordionTrigger>
@@ -97,7 +97,7 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                     <Link
                       key={itemIndex}
                       to={item.path}
-                      className="block px-6 py-2.5 text-gray-300 hover:text-white hover:bg-zinc-700 text-sm"
+                      className="block px-6 py-3.5 text-gray-300 hover:text-white hover:bg-zinc-700 text-base active:bg-zinc-600"
                       onClick={handleLinkClick}
                     >
                       {item.name}
@@ -119,9 +119,9 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
             >
               <Button
                 variant="outline"
-                className="bg-[#FFDD00] hover:bg-[#FFCC00] text-black border-[#FFDD00] px-6"
+                className="bg-[#FFDD00] hover:bg-[#FFCC00] text-black border-[#FFDD00] px-6 h-12 text-base font-medium"
               >
-                Buy me a Coffee
+                ☕️ Buy me a Coffee
               </Button>
             </a>
           </div>

@@ -43,10 +43,13 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="min-h-screen flex flex-col bg-zinc-800 text-white">
       <header className="bg-zinc-900 p-4">
         <nav className="container mx-auto flex items-center justify-between">
-          <div className="flex-1 flex items-center">
-            <Link to="/" className="text-xl font-bold text-white mr-4">
+          {/* Logo and Menu - Centered on mobile */}
+          <div className="flex-1 flex items-center justify-between md:justify-start">
+            {/* Logo - Centered on mobile */}
+            <Link to="/" className="text-xl font-bold text-white md:mr-4 flex-grow md:flex-grow-0 text-center md:text-left">
               Convert Case
             </Link>
+            {/* Desktop Menu */}
             <Menubar className="hidden md:flex border-zinc-700 bg-zinc-800 h-8 space-x-0">
               {menuConfig.categories.map((category, index) => (
                 <MenubarMenu key={index}>
@@ -111,11 +114,6 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           </div>
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-3">
-              <ThemeSwitcher 
-                value={theme as 'light' | 'dark' | 'system'} 
-                onChange={setTheme} 
-                className="bg-zinc-700 ring-zinc-600" 
-              />
               <div
                 className="bg-zinc-700 text-white px-3 py-1 rounded flex items-center gap-2 cursor-pointer"
                 onClick={() => setSearchOpen(true)}
@@ -124,14 +122,25 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 <span>Search tools... (Press /)</span>
               </div>
             </div>
-            <Button 
-              variant="ghost" 
-              className="text-white md:hidden flex items-center gap-2"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <Menu size={18} />
-              <span>Menu</span>
-            </Button>
+            {/* Mobile Menu and Search Icons */}
+            <div className="flex items-center gap-3 md:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white"
+                onClick={() => setSearchOpen(true)}
+              >
+                <Search size={18} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white"
+                onClick={() => setMobileMenuOpen(true)}
+              >
+                <Menu size={18} />
+              </Button>
+            </div>
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
             <MobileNavDrawer 
               open={mobileMenuOpen} 

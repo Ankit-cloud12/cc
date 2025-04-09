@@ -80,90 +80,102 @@ const BoldTextGenerator = () => {
 
   return (
     <ToolLayout title="Bold Text Generator" hideHeader={true}>
-      <div className="container mx-auto p-4">
+      {/* Use w-full div similar to BigTextGenerator */}
+      <div className="w-full"> 
         <h1 className="text-3xl font-bold mb-2">Bold Text Generator</h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
+        {/* Adjusted paragraph text color */}
+        <p className="text-gray-300 mb-6"> 
           Convert your text into bold Unicode characters that you can use on
           social media, messages, and more.
         </p>
 
-        {/* Input and Output Textboxes */}
-        <div className="flex flex-col md:flex-row gap-4 mb-4">
-          <div className="w-full md:w-1/2">
+        {/* Changed layout to grid */}
+        <div className="grid gap-6 md:grid-cols-2"> 
+          {/* Input Section */}
+          <div className="w-full">
             <Textarea
               placeholder="Type or paste your text here"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize"
             />
-          </div>
-          
-          <div className="w-full md:w-1/2 flex flex-col">
-            <Textarea
-              readOnly
-              placeholder="Bold text will appear here"
-              value={outputText}
-              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize mb-2"
-            />
             
-            {/* Actions Row - Moved below output box and aligned right */}
-            <div className="flex flex-wrap gap-2 mb-4 justify-end">
-              <Button 
-                variant="outline" 
-                onClick={handleCopy} 
-                disabled={!outputText}
-                className="border-zinc-600"
-              >
-                {copied ? "Copied!" : "Copy to Clipboard"}
-              </Button>
+            {/* Stats Card - Moved here */}
+            <Card className="p-4 mt-4 bg-zinc-800 border-zinc-700">
+              <div className="flex flex-wrap gap-4">
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Character Count</span>
+                  <span className="text-xl font-semibold">{charCount}</span>
+                </div>
+                
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Word Count</span>
+                  <span className="text-xl font-semibold">{wordCount}</span>
+                </div>
+                
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Sentence Count</span>
+                  <span className="text-xl font-semibold">{sentenceCount}</span>
+                </div>
+                
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Line Count</span>
+                  <span className="text-xl font-semibold">{lineCount}</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Result Section */}
+          <div className="w-full">
+            {/* Added h-full flex flex-col */}
+            <div className="h-full flex flex-col"> 
+              <Textarea
+                readOnly
+                placeholder="Bold text will appear here"
+                value={outputText}
+                // Added mb-4 to match BigTextGenerator
+                className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize mb-4" 
+              />
               
-              <Button 
-                variant="outline" 
-                onClick={handleDownload} 
-                disabled={!outputText}
-                className="border-zinc-600"
-              >
-                Download
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={handleClear}
-                className="border-zinc-600"
-              >
-                Clear
-              </Button>
+              {/* Actions Row - Adjusted styling and order */}
+              {/* Added mt-auto */}
+              <div className="flex flex-wrap gap-2 mt-auto"> 
+                <Button 
+                  // Applied BigTextGenerator styling
+                  className="bg-blue-600 hover:bg-blue-700 text-white" 
+                  onClick={handleDownload} 
+                  disabled={!outputText}
+                >
+                  Download
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  onClick={handleCopy} 
+                  disabled={!outputText}
+                  // Applied BigTextGenerator styling
+                  className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600" 
+                >
+                  {copied ? "Copied!" : "Copy to Clipboard"}
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  onClick={handleClear}
+                  // Applied BigTextGenerator styling
+                  className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600" 
+                >
+                  Clear
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        
-        {/* Stats Card */}
-        <Card className="p-4 mb-4 bg-zinc-800 border-zinc-700">
-          <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400">Character Count</span>
-              <span className="text-xl font-semibold">{charCount}</span>
-            </div>
-            
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400">Word Count</span>
-              <span className="text-xl font-semibold">{wordCount}</span>
-            </div>
-            
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400">Sentence Count</span>
-              <span className="text-xl font-semibold">{sentenceCount}</span>
-            </div>
-            
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400">Line Count</span>
-              <span className="text-xl font-semibold">{lineCount}</span>
-            </div>
-          </div>
-        </Card>
-        
+
         {/* Information Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
+        {/* Added mt-6 */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6"> 
           <TabsList className="mb-2 bg-zinc-800">
             <TabsTrigger value="about" className="data-[state=active]:bg-zinc-700">About</TabsTrigger>
             <TabsTrigger value="usage" className="data-[state=active]:bg-zinc-700">Usage Tips</TabsTrigger>

@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea"; // Import Textarea
 
 interface HistoryItem {
   id: string;
@@ -37,6 +38,7 @@ interface CodeTranslationLayoutProps {
   onHistoryClear?: () => void;
   onHistoryItemSelect?: (item: HistoryItem) => void;
   themeColor?: string;
+  outputContent?: ReactNode; // New prop for custom output area
 }
 
 const CodeTranslationLayout: React.FC<CodeTranslationLayoutProps> = ({
@@ -66,6 +68,7 @@ const CodeTranslationLayout: React.FC<CodeTranslationLayoutProps> = ({
   onHistoryClear,
   onHistoryItemSelect,
   themeColor = "blue", // Default theme color
+  outputContent, // Destructure new prop
 }) => {
   // Primary color based on theme
   const getThemeClasses = () => {
@@ -79,11 +82,11 @@ const CodeTranslationLayout: React.FC<CodeTranslationLayoutProps> = ({
     return themes[themeColor as keyof typeof themes] || themes.blue;
   };
   const renderActionButtons = () => (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:flex flex-wrap gap-2">
       {showProcessButton && onProcess && (
         <Button
           onClick={onProcess}
-          className={`${getThemeClasses()} text-white font-medium shadow-sm`}
+          className={`${getThemeClasses()} text-white font-medium shadow h-10 px-4 text-sm disabled:opacity-50`}
           disabled={isProcessing}
         >
           {isProcessing ? "Processing..." : processButtonText}
@@ -93,7 +96,7 @@ const CodeTranslationLayout: React.FC<CodeTranslationLayoutProps> = ({
       {showCopyButton && onCopy && result && (
         <Button
           variant="outline"
-          className="bg-zinc-800 hover:bg-zinc-700 text-gray-100 border-zinc-700 shadow-sm transition-colors"
+          className="bg-zinc-700 hover:bg-zinc-600 text-gray-100 border-zinc-600 shadow transition-colors h-10 px-4 text-sm"
           onClick={onCopy}
         >
           {copied ? "Copied!" : copyButtonText}
@@ -103,7 +106,7 @@ const CodeTranslationLayout: React.FC<CodeTranslationLayoutProps> = ({
       {showDownloadButton && onDownload && result && (
         <Button
           variant="outline"
-          className="bg-zinc-800 hover:bg-zinc-700 text-gray-100 border-zinc-700 shadow-sm transition-colors"
+          className="bg-zinc-700 hover:bg-zinc-600 text-gray-100 border-zinc-600 shadow transition-colors h-10 px-4 text-sm"
           onClick={onDownload}
         >
           {downloadButtonText}
@@ -113,7 +116,7 @@ const CodeTranslationLayout: React.FC<CodeTranslationLayoutProps> = ({
       {showResetButton && onReset && (
         <Button
           variant="outline"
-          className="bg-zinc-800 hover:bg-zinc-700 text-gray-100 border-zinc-700 shadow-sm transition-colors"
+          className="bg-zinc-700 hover:bg-zinc-600 text-gray-100 border-zinc-600 shadow transition-colors h-10 px-4 text-sm"
           onClick={onReset}
         >
           {resetButtonText}
@@ -125,9 +128,9 @@ const CodeTranslationLayout: React.FC<CodeTranslationLayoutProps> = ({
   );
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2 text-white">{title}</h1>
-      <p className="text-gray-200 mb-6">{description}</p>
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-0">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-3 text-white">{title}</h1>
+      <p className="text-gray-300 mb-6 text-base sm:text-sm">{description}</p>
 
       {error && (
         <div className="bg-red-900/60 border border-red-600 text-red-100 px-4 py-3 rounded mb-4 shadow-sm">
@@ -135,47 +138,80 @@ const CodeTranslationLayout: React.FC<CodeTranslationLayoutProps> = ({
         </div>
       )}
 
-      {actionButtonsPosition === 'top' && renderActionButtons()}
-      
-      <div className="my-6">
-        {children}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Input Section */}
+        <div className="w-full space-y-4">
+          {actionButtonsPosition === 'top' && renderActionButtons()}
+          {children}
+        </div>
+
+        {/* Output Section (Right Column) */}
+        <div className="w-full space-y-4">
+          {outputContent ? ( // Render custom output if provided
+            outputContent
+          ) : result ? ( // Otherwise, render default result area if result exists
+            <Textarea
+              readOnly
+              value={typeof result === 'string' ? result : JSON.stringify(result, null, 2)}
+              className="w-full min-h-[200px] md:min-h-[424px] bg-zinc-700 text-white border-zinc-600 rounded resize-none font-mono" // Use Textarea for consistency
+              placeholder="Output will appear here"
+            />
+          ) : null} {/* Remove the placeholder div entirely */}
+          {actionButtonsPosition === 'bottom' || actionButtonsPosition === 'both' ? renderActionButtons() : null}
+        </div>
       </div>
-      
-      {actionButtonsPosition === 'bottom' || actionButtonsPosition === 'both' ? renderActionButtons() : null}
 
       {/* History Section */}
+      {/* History Section */}
       {toolHistory && toolHistory.length > 0 && (
-        <Card className="mt-8 bg-zinc-800 border-zinc-700 p-4">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-medium text-white">History</h3>
-            {onHistoryClear && (
-              <Button variant="ghost" size="sm" onClick={onHistoryClear} 
-                      className="text-gray-300 hover:text-white hover:bg-zinc-700">
-                Clear History
-              </Button>
-            )}
-          </div>
-          <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-            {toolHistory.map((item) => (
-              <div 
-                key={item.id}
-                onClick={() => onHistoryItemSelect && onHistoryItemSelect(item)}
-                className="bg-zinc-900 p-2 rounded text-sm cursor-pointer hover:bg-zinc-700 transition-colors"
-              >
-                <div className="text-gray-200 truncate">{item.input.substring(0, 50)}{item.input.length > 50 ? '...' : ''}</div>
-                <div className="text-gray-400 text-xs mt-1">
-                  {new Date(item.timestamp).toLocaleString()}
-                </div>
+        <div className="mt-8">
+          <Card className="bg-zinc-700 border-zinc-600 overflow-hidden rounded-lg">
+            <div className="p-4 border-b border-zinc-600">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-medium text-white">History</h3>
+                {onHistoryClear && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onHistoryClear}
+                    className="text-gray-300 hover:text-white hover:bg-zinc-600"
+                  >
+                    Clear History
+                  </Button>
+                )}
               </div>
-            ))}
-          </div>
-        </Card>
+            </div>
+            <div className="p-4">
+              <div className="space-y-2 max-h-[70vh] sm:max-h-60 overflow-y-auto">
+                {toolHistory.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => onHistoryItemSelect && onHistoryItemSelect(item)}
+                    className="bg-zinc-800 p-3 rounded-lg text-base sm:text-sm cursor-pointer hover:bg-zinc-600 active:bg-zinc-500 transition-colors"
+                  >
+                    <div className="text-gray-200 truncate">{item.input.substring(0, 50)}{item.input.length > 50 ? '...' : ''}</div>
+                    <div className="text-gray-400 text-xs mt-1">
+                      {new Date(item.timestamp).toLocaleString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        </div>
       )}
 
+      {/* About Section */}
       {aboutContent && (
-        <div className="mt-8 mb-12">
-          <h2 className="text-xl font-bold mb-4 text-white">About {title}</h2>
-          {aboutContent}
+        <div className="mt-8">
+          <Card className="bg-zinc-700 border-zinc-600 overflow-hidden rounded-lg">
+            <div className="p-6">
+              <h2 className="text-xl font-bold mb-4 text-white">About {title}</h2>
+              <div className="text-gray-300 space-y-4">
+                {aboutContent}
+              </div>
+            </div>
+          </Card>
         </div>
       )}
     </div>

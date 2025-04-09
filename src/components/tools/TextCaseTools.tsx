@@ -23,6 +23,8 @@ interface TextCaseToolsProps {
   title?: string;
   description?: string;
   onTextTransform?: (text: string) => string;
+  aboutContent?: React.ReactNode; // Added prop for custom About content
+  usageTipsContent?: React.ReactNode; // Added prop for custom Usage Tips content
 }
 
 const TextCaseTools = ({
@@ -33,6 +35,8 @@ const TextCaseTools = ({
   title = "Accidentally left the caps lock on and typed something, but can't be bothered to start again and retype it all?",
   description = "Simply enter your text and choose the case you want to convert it to.",
   onTextTransform,
+  aboutContent, // Destructure new prop
+  usageTipsContent, // Destructure new prop
 }: TextCaseToolsProps) => {
   const [inputText, setInputText] = useState(initialText);
   const [outputText, setOutputText] = useState("");
@@ -423,38 +427,52 @@ const TextCaseTools = ({
             <TabsTrigger value="usage" className="data-[state=active]:bg-zinc-700">Usage Tips</TabsTrigger>
           </TabsList>
           
+          {/* Use custom aboutContent if provided, otherwise use default */}
           <TabsContent value="options" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-            <h3 className="font-medium mb-2">About Text Case Converter</h3>
-            <p className="mb-4">
-              This tool allows you to convert your text between different case formats. It's perfect for:
-            </p>
-            <ul className="list-disc pl-5 space-y-2 mb-4">
-              <li>Fixing text where CAPS LOCK was accidentally left on</li>
-              <li>Creating headlines and titles with proper capitalization</li>
-              <li>Preparing text for different stylistic requirements</li>
-              <li>Converting between formal and creative text styles</li>
-            </ul>
-            <p className="mb-4">
-              Choose from 7 different text case options to instantly transform your text without retyping.
-            </p>
+            {aboutContent ? (
+              aboutContent
+            ) : (
+              <>
+                <h3 className="font-medium mb-2">About Text Case Converter</h3>
+                <p className="mb-4">
+                  This tool allows you to convert your text between different case formats. It's perfect for:
+                </p>
+                <ul className="list-disc pl-5 space-y-2 mb-4">
+                  <li>Fixing text where CAPS LOCK was accidentally left on</li>
+                  <li>Creating headlines and titles with proper capitalization</li>
+                  <li>Preparing text for different stylistic requirements</li>
+                  <li>Converting between formal and creative text styles</li>
+                </ul>
+                <p className="mb-4">
+                  Choose from 7 different text case options to instantly transform your text without retyping.
+                </p>
+              </>
+            )}
           </TabsContent>
           
+          {/* Use custom usageTipsContent if provided, otherwise use default */}
           <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-            <h3 className="font-medium mb-2">Usage Tips</h3>
-            <ul className="list-disc pl-5 space-y-2 mb-4">
-              <li>Type or paste your text in the input box on the left</li>
-              <li>Select your desired case format from the buttons</li>
-              <li>The converted text will appear in the output box on the right</li>
-              <li>Use "Sentence case" for normal paragraph text</li>
-              <li>Use "Title Case" for headlines and titles</li>
-              <li>Use "UPPERCASE" for emphasis or headers</li>
-              <li>Use "aLtErNaTiNg" or "InVeRsE" case for creative styling</li>
-              <li>Copy the result to clipboard or download as a text file</li>
-            </ul>
-            
-            <p className="text-sm text-gray-400">
-              Pro Tip: You can quickly switch between different case styles to see which one works best for your text.
-            </p>
+            {usageTipsContent ? (
+              usageTipsContent
+            ) : (
+              <>
+                <h3 className="font-medium mb-2">Usage Tips</h3>
+                <ul className="list-disc pl-5 space-y-2 mb-4">
+                  <li>Type or paste your text in the input box on the left</li>
+                  <li>Select your desired case format from the buttons</li>
+                  <li>The converted text will appear in the output box on the right</li>
+                  <li>Use "Sentence case" for normal paragraph text</li>
+                  <li>Use "Title Case" for headlines and titles</li>
+                  <li>Use "UPPERCASE" for emphasis or headers</li>
+                  <li>Use "aLtErNaTiNg" or "InVeRsE" case for creative styling</li>
+                  <li>Copy the result to clipboard or download as a text file</li>
+                </ul>
+                
+                <p className="text-sm text-gray-400">
+                  Pro Tip: You can quickly switch between different case styles to see which one works best for your text.
+                </p>
+              </>
+            )}
           </TabsContent>
         </Tabs>
       </div>

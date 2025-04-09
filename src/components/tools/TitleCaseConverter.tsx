@@ -6,10 +6,46 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toTitleCase } from "@/lib/utils";
+import { ToolLayout } from "./ToolLayout"; // Import ToolLayout
+import { Card } from "@/components/ui/card"; // Import Card for consistency
+import { cn } from "@/lib/utils"; // Import cn if needed for conditional classes
 
 // Title case style types
 type TitleCaseStyle = "ama" | "ap" | "apa" | "bluebook" | "chicago" | "mla" | "nyt" | "wikipedia";
+
+// SEO-focused content for About tab
+const aboutContent = (
+  <>
+    <h3 className="font-medium mb-2">About Title Case Converter</h3>
+    <p className="mb-4">
+      Our smart Title Case Converter helps you capitalize titles correctly according to various style guides, including Chicago, APA, MLA, AP, NY Times, and more. It intelligently handles articles, prepositions, and conjunctions based on the selected style.
+    </p>
+    <p className="mb-4">
+      Ensure your headlines, blog post titles, book titles, and other headings are perfectly formatted. This free online tool saves you time and helps maintain consistency across your writing. Choose your style guide and convert your text instantly.
+    </p>
+    <h4 className="font-medium mb-2">Keywords:</h4>
+    <p className="text-sm text-gray-400">title case converter, headline capitalization, title capitalization tool, Chicago style title case, APA title case, MLA title case, AP title case, online text tool, text case converter</p>
+  </>
+);
+
+// SEO-focused content for Usage Tips tab
+const usageTipsContent = (
+  <>
+    <h3 className="font-medium mb-2">How to Use the Title Case Converter</h3>
+    <ul className="list-disc pl-5 space-y-2 mb-4">
+      <li><strong>Enter Title:</strong> Type or paste the title or headline you want to convert into the main input box.</li>
+      <li><strong>Select Style:</strong> Choose the desired capitalization style (e.g., Chicago, APA, MLA) from the radio buttons.</li>
+      <li><strong>Convert:</strong> Click the "Convert" button (or enable auto-convert on paste).</li>
+      <li><strong>View Results:</strong> The correctly formatted title case will appear below the style options. You can also see Sentence case, lowercase, and UPPERCASE versions in the tabs below.</li>
+      <li><strong>Options:</strong> Use the checkboxes to customize behavior, like keeping words in all caps or enabling multi-line input for lists.</li>
+      <li><strong>Copy/Download:</strong> Use the "Copy" button next to each output or download the main title case result.</li>
+    </ul>
+    <p className="text-sm text-gray-400">
+      Tip: Different publications and academic fields use different title case rules. Select the style guide that matches your requirements.
+    </p>
+  </>
+);
+
 
 export const TitleCaseConverter = () => {
   const [inputText, setInputText] = useState("");
@@ -23,11 +59,16 @@ export const TitleCaseConverter = () => {
   const [lineCount, setLineCount] = useState(0);
   const [keepAllCaps, setKeepAllCaps] = useState(true);
   const [multiLineMode, setMultiLineMode] = useState(false);
-  const [showExplanations, setShowExplanations] = useState(false);
-  const [highlightChanges, setHighlightChanges] = useState(false);
+  const [showExplanations, setShowExplanations] = useState(false); // Keep state if needed for future features
+  const [highlightChanges, setHighlightChanges] = useState(false); // Keep state if needed for future features
   const [useStraightQuotes, setUseStraightQuotes] = useState(false);
   const [convertOnPaste, setConvertOnPaste] = useState(true);
-  const [copied, setCopied] = useState(false);
+  const [copiedStates, setCopiedStates] = useState({
+    title: false,
+    sentence: false,
+    lower: false,
+    upper: false,
+  });
   
   const textInputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -46,7 +87,14 @@ export const TitleCaseConverter = () => {
 
   // Convert text based on selected options
   const convertText = () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim()) {
+      // Clear outputs if input is empty
+      setTitleCaseText("");
+      setSentenceCaseText("");
+      setLowerCaseText("");
+      setUpperCaseText("");
+      return;
+    };
 
     // Convert to title case with selected style
     const titleCaseResult = applyTitleCaseStyle(inputText, selectedStyle);
@@ -62,122 +110,69 @@ export const TitleCaseConverter = () => {
 
   // Apply title case conversion based on selected style
   const applyTitleCaseStyle = (text: string, style: TitleCaseStyle): string => {
-    // For multi-line mode, process each line separately
     if (multiLineMode) {
-      return text.split(/\r\n|\r|\n/).map(line => {
-        return processSingleTitle(line, style);
-      }).join('\n');
+      return text.split(/\r\n|\r|\n/).map(line => processSingleTitle(line, style)).join('\n');
     } else {
       return processSingleTitle(text, style);
     }
   };
-
+  
   // Process a single title with the selected style
   const processSingleTitle = (text: string, style: TitleCaseStyle): string => {
-    // Split text by spaces to process each word
     const words = text.split(' ');
     const titleCaseWords = words.map((word, index) => {
-      // Skip empty words
       if (!word) return word;
-
-      // Keep words in all caps if the option is enabled
-      if (keepAllCaps && word === word.toUpperCase() && word.length > 1) {
-        return word;
-      }
-
-      // Always capitalize the first word
-      if (index === 0) {
-        return capitalizeFirstLetter(word);
-      }
-
-      // Always capitalize the last word in certain styles
-      if (index === words.length - 1 && ["ap", "chicago", "mla", "nyt", "wikipedia"].includes(style)) {
-        return capitalizeFirstLetter(word);
-      }
-
-      // Check for lowercase words based on style
-      if (shouldBeLowercase(word, style)) {
-        return word.toLowerCase();
-      }
-
-      // Default: capitalize the word
+      if (keepAllCaps && word === word.toUpperCase() && word.length > 1) return word;
+      if (index === 0) return capitalizeFirstLetter(word);
+      if (index === words.length - 1 && ["ap", "chicago", "mla", "nyt", "wikipedia"].includes(style)) return capitalizeFirstLetter(word);
+      if (shouldBeLowercase(word, style, words, index)) return word.toLowerCase(); // Pass words and index
       return capitalizeFirstLetter(word);
     });
-
-    // Apply smart quotes if needed
     return useStraightQuotes ? titleCaseWords.join(' ') : applySmartQuotes(titleCaseWords.join(' '));
   };
 
   // Helper function to determine if a word should be lowercase based on style
-  const shouldBeLowercase = (word: string, style: TitleCaseStyle): boolean => {
+  // Added words and index parameters for context-dependent rules
+  const shouldBeLowercase = (word: string, style: TitleCaseStyle, words: string[], index: number): boolean => {
     const lowerWord = word.toLowerCase();
-    
-    // Articles (always lowercase in all styles)
     const articles = ["a", "an", "the"];
     if (articles.includes(lowerWord)) return true;
-    
-    // Coordinating conjunctions (style-dependent)
+
     const coordinatingConjunctions = ["and", "but", "or", "nor", "for", "yet", "so"];
     if (coordinatingConjunctions.includes(lowerWord)) {
-      // NYT-specific rule for conjunctions
-      if (style === "nyt" && ["nor", "yet", "so"].includes(lowerWord)) {
-        return false;
-      }
-      // Chicago-specific rule for conjunctions
-      if (style === "chicago" && ["yet", "so"].includes(lowerWord)) {
-        return false;
-      }
+      if (style === "nyt" && ["nor", "yet", "so"].includes(lowerWord)) return false;
+      if (style === "chicago" && ["yet", "so"].includes(lowerWord)) return false;
       return true;
     }
-    
-    // Prepositions (style-dependent)
+
     const shortPrepositions = ["at", "by", "in", "of", "on", "to", "up", "as", "if", "off", "out", "via"];
     const mediumPrepositions = ["from", "into", "like", "near", "over", "with", "upon"];
-    
+
     if (shortPrepositions.includes(lowerWord)) {
-      // NYT-specific preposition rules
-      if (style === "nyt" && ["up", "off", "out"].includes(lowerWord)) {
-        return false;
-      }
-      // MLA lowercase all prepositions
+      if (style === "nyt" && ["up", "off", "out"].includes(lowerWord)) return false;
       if (style === "mla") return true;
-      
-      // Subordinating conjunctions: "if" and "as"
-      if (lowerWord === "if") {
-        return ["ama", "ap", "apa", "nyt"].includes(style);
-      }
-      if (lowerWord === "as") {
-        return ["ap", "apa", "nyt"].includes(style);
-      }
-      
+      if (lowerWord === "if") return ["ama", "ap", "apa", "nyt"].includes(style);
+      if (lowerWord === "as") return ["ap", "apa", "nyt"].includes(style);
+      // Check if preposition is last word for specific styles
+      if ((style === "ama" || style === "apa" || style === "bluebook") && index === words.length - 1) return false; 
       return true;
     }
-    
+
     if (mediumPrepositions.includes(lowerWord)) {
-      // Different style guidelines for 4-letter prepositions
       if (["ama", "ap", "apa", "nyt"].includes(style)) return false;
       if (style === "mla") return true;
+       // Check if preposition is last word for specific styles
+      if ((style === "ama" || style === "apa" || style === "bluebook") && index === words.length - 1) return false;
       return true; // For bluebook, chicago, wikipedia
     }
-    
-    // APA, Bluebook specific: preposition at the end of a title
-    if ((style === "ama" || style === "apa" || style === "bluebook") && 
-        shortPrepositions.includes(lowerWord)) {
-      // Check if this is the last word
-      if (words && word === words[words.length - 1]) {
-        return true;
-      }
-    }
-    
+
     return false;
   };
 
   // Apply sentence case (capitalize first letter, proper nouns)
   const applySentenceCase = (text: string): string => {
     if (multiLineMode) {
-      return text.split(/\r\n|\r|\n/).map(line => {
-        return processSentenceCase(line);
-      }).join('\n');
+      return text.split(/\r\n|\r|\n/).map(line => processSentenceCase(line)).join('\n');
     } else {
       return processSentenceCase(text);
     }
@@ -186,17 +181,17 @@ export const TitleCaseConverter = () => {
   // Process a single line for sentence case
   const processSentenceCase = (text: string): string => {
     if (!text) return text;
-    
-    // Split by sentence terminators
     const sentences = text.split(/(?<=[.!?])\s+/);
-    
     return sentences.map(sentence => {
       if (!sentence) return sentence;
-      return sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase();
-    }).join(' ');
+      // Trim leading/trailing whitespace before capitalizing
+      const trimmedSentence = sentence.trim();
+      if (!trimmedSentence) return sentence; // Handle empty/whitespace-only sentences
+      return trimmedSentence.charAt(0).toUpperCase() + trimmedSentence.slice(1).toLowerCase();
+    }).join(' '); // Ensure single space between sentences
   };
 
-  // Capitalize first letter of a word, leave rest as is
+  // Capitalize first letter of a word, leave rest as is (make rest lowercase)
   const capitalizeFirstLetter = (word: string): string => {
     if (!word) return word;
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
@@ -205,11 +200,12 @@ export const TitleCaseConverter = () => {
   // Apply smart quotes typography
   const applySmartQuotes = (text: string): string => {
     return text
-      .replace(/(\s|^)"(\S)/g, '$1"$2')  // Opening double quotes
-      .replace(/(\S)"(\s|$|[.,;!?])/g, '$1"$2')  // Closing double quotes
-      .replace(/(\s|^)'(\S)/g, '$1\'$2')  // Opening single quotes
-      .replace(/(\S)'(\s|$|[.,;!?])/g, '$1\'$2')  // Closing single quotes
-      .replace(/(\s|^)'(\S)/g, '$1\'$2')  // Opening single quotes (apostrophes at start)
+      .replace(/(\s|^)"(\S)/g, '$1“$2')  // Opening double quotes
+      .replace(/(\S)"(\s|$|[.,;!?])/g, '$1”$2')  // Closing double quotes
+      .replace(/"/g, '”') // Replace remaining straight doubles with closing
+      .replace(/(\s|^)'(\S)/g, '$1‘$2')  // Opening single quotes
+      .replace(/(\S)'(\s|$|[.,;!?])/g, '$1’$2')  // Closing single quotes (apostrophes)
+      .replace(/'/g, '’') // Replace remaining straight singles with closing/apostrophe
       .replace(/--/g, '—')  // Em dash
       .replace(/\.{3}/g, '…')  // Ellipsis
       .replace(/(\s+)([.,;:!?])/g, '$2');  // Remove spaces before punctuation
@@ -218,20 +214,26 @@ export const TitleCaseConverter = () => {
   // Handle text input
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.target.value);
-    if (convertOnPaste && e.target.value !== inputText) {
-      convertText();
+    if (convertOnPaste) { // Trigger conversion immediately if option is on
+       setTimeout(convertText, 0); // Use timeout to allow state update
     }
   };
+  
+   // Trigger conversion when options change if there's input text
+  useEffect(() => {
+    if (inputText) {
+      convertText();
+    }
+  }, [selectedStyle, keepAllCaps, multiLineMode, useStraightQuotes]); // Add dependencies
+
 
   // Handle style selection
   const handleStyleChange = (style: string) => {
     setSelectedStyle(style as TitleCaseStyle);
-    if (inputText) {
-      convertText();
-    }
+    // Conversion is now handled by the useEffect hook
   };
 
-  // Handle conversion on button click
+  // Handle conversion on button click (still useful if auto-convert is off)
   const handleConvertClick = () => {
     convertText();
   };
@@ -247,17 +249,17 @@ export const TitleCaseConverter = () => {
     }
   };
 
-  // Handle copy to clipboard
-  const handleCopy = (text: string) => {
+  // Handle copy to clipboard for specific output
+  const handleCopy = (text: string, type: 'title' | 'sentence' | 'lower' | 'upper') => {
     navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedStates(prev => ({ ...prev, [type]: true }));
+    setTimeout(() => setCopiedStates(prev => ({ ...prev, [type]: false })), 2000);
   };
 
   // Handle paste event
   const handlePaste = (e: React.ClipboardEvent) => {
     if (convertOnPaste) {
-      setTimeout(convertText, 0);
+      // Let the input change handler trigger the conversion
     }
   };
 
@@ -274,14 +276,14 @@ export const TitleCaseConverter = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Title Case Converter</h1>
-          <p className="text-gray-300 mb-4">A Smart Title Capitalization Tool</p>
-        </div>
+    // Wrap with ToolLayout
+    <ToolLayout title="Title Case Converter" hideHeader={true}>
+      <div className="w-full"> {/* Use w-full div for consistency */}
+        <h1 className="text-3xl font-bold mb-2">Title Case Converter</h1>
+        <p className="text-gray-300 mb-6">A Smart Title Capitalization Tool - Choose your style guide (Chicago, APA, MLA, etc.)</p>
         
-        <div className="bg-zinc-800 p-4 rounded-md">
+        {/* Main content area using Card for consistency */}
+        <Card className="p-4 mb-6 bg-zinc-800 border-zinc-700">
           <div className="mb-4">
             <Textarea
               ref={textInputRef}
@@ -289,8 +291,8 @@ export const TitleCaseConverter = () => {
               onChange={handleInputChange}
               onKeyDown={handleKeyPress}
               onPaste={handlePaste}
-              placeholder="Enter your text here..."
-              className="w-full min-h-[100px] bg-zinc-700 text-white border-zinc-600"
+              placeholder="Enter your title or headline here..."
+              className="w-full min-h-[100px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize" // Added padding
             />
             <div className="flex justify-between items-center mt-2 text-sm text-gray-400">
               <span>{wordCount} word{wordCount !== 1 ? 's' : ''} • {charCount} character{charCount !== 1 ? 's' : ''} • {lineCount} line{lineCount !== 1 ? 's' : ''}</span>
@@ -298,160 +300,146 @@ export const TitleCaseConverter = () => {
                 onClick={handleClear} 
                 variant="outline" 
                 size="sm"
-                className="text-gray-300 hover:text-white"
+                className="border-zinc-600 text-gray-300 hover:text-white hover:bg-zinc-700" // Consistent button style
               >
                 Clear
               </Button>
             </div>
           </div>
           
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Button 
-              onClick={handleConvertClick} 
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              Convert
-            </Button>
-          </div>
+          {/* Convert button - less prominent if auto-convert is on */}
+          {!convertOnPaste && (
+             <div className="flex flex-wrap gap-2 mb-4">
+                <Button 
+                  onClick={handleConvertClick} 
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Convert
+                </Button>
+             </div>
+          )}
           
-          <div className="space-y-4">
+          {/* Title Case Output and Style Selection */}
+          <div className="space-y-4 mb-6">
             <div>
-              <Label className="block mb-2 font-medium">Title Case:</Label>
+              <Label className="block mb-2 font-medium">Title Case Style:</Label>
               <div className="flex gap-2 flex-wrap mb-2">
                 <RadioGroup 
                   value={selectedStyle} 
                   onValueChange={handleStyleChange}
-                  className="flex flex-wrap gap-2"
+                  className="flex flex-wrap gap-x-4 gap-y-2" // Adjusted gap
                 >
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="ama" id="ama" />
-                    <Label htmlFor="ama" className="cursor-pointer">AMA</Label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="ap" id="ap" />
-                    <Label htmlFor="ap" className="cursor-pointer">AP</Label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="apa" id="apa" />
-                    <Label htmlFor="apa" className="cursor-pointer">APA</Label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="bluebook" id="bluebook" />
-                    <Label htmlFor="bluebook" className="cursor-pointer">Bluebook</Label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="chicago" id="chicago" />
-                    <Label htmlFor="chicago" className="cursor-pointer">Chicago</Label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="mla" id="mla" />
-                    <Label htmlFor="mla" className="cursor-pointer">MLA</Label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="nyt" id="nyt" />
-                    <Label htmlFor="nyt" className="cursor-pointer">NY Times</Label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="wikipedia" id="wikipedia" />
-                    <Label htmlFor="wikipedia" className="cursor-pointer">Wikipedia</Label>
-                  </div>
+                  {/* Simplified Radio Items */}
+                  {(["ama", "ap", "apa", "bluebook", "chicago", "mla", "nyt", "wikipedia"] as TitleCaseStyle[]).map(style => (
+                    <div key={style} className="flex items-center space-x-1">
+                      <RadioGroupItem value={style} id={style} />
+                      <Label htmlFor={style} className="cursor-pointer capitalize">{style === 'nyt' ? 'NY Times' : style}</Label>
+                    </div>
+                  ))}
                 </RadioGroup>
               </div>
               
-              {titleCaseText && (
-                <div className="relative">
-                  <Textarea 
-                    readOnly 
-                    value={titleCaseText} 
-                    className="w-full bg-zinc-700 text-white border-zinc-600" 
-                  />
+              {/* Title Case Output */}
+              <div className="relative mt-2">
+                <Textarea 
+                  readOnly 
+                  value={titleCaseText} 
+                  placeholder="Title case output..."
+                  className="w-full bg-zinc-700 text-white border-zinc-600 p-4 rounded resize min-h-[80px]" // Added padding and min-height
+                />
+                {titleCaseText && (
                   <Button 
-                    onClick={() => handleCopy(titleCaseText)} 
+                    onClick={() => handleCopy(titleCaseText, 'title')} 
                     className="absolute top-2 right-2 bg-zinc-600 hover:bg-zinc-500 text-white text-xs py-1 px-2"
                     size="sm"
                   >
-                    {copied ? "Copied!" : "Copy"}
+                    {copiedStates.title ? "Copied!" : "Copy"}
                   </Button>
-                </div>
-              )}
-            </div>
-            
-            <div>
-              <Label className="block mb-2 font-medium">Other Styles:</Label>
-              <Tabs defaultValue="sentence" className="w-full">
-                <TabsList className="grid grid-cols-3 mb-2">
-                  <TabsTrigger value="sentence">Sentence Case</TabsTrigger>
-                  <TabsTrigger value="lowercase">Lowercase</TabsTrigger>
-                  <TabsTrigger value="uppercase">UPPERCASE</TabsTrigger>
-                </TabsList>
-                <TabsContent value="sentence">
-                  {sentenceCaseText && (
-                    <div className="relative">
-                      <Textarea 
-                        readOnly 
-                        value={sentenceCaseText} 
-                        className="w-full bg-zinc-700 text-white border-zinc-600" 
-                      />
-                      <Button 
-                        onClick={() => handleCopy(sentenceCaseText)} 
-                        className="absolute top-2 right-2 bg-zinc-600 hover:bg-zinc-500 text-white text-xs py-1 px-2"
-                        size="sm"
-                      >
-                        {copied ? "Copied!" : "Copy"}
-                      </Button>
-                    </div>
-                  )}
-                </TabsContent>
-                <TabsContent value="lowercase">
-                  {lowerCaseText && (
-                    <div className="relative">
-                      <Textarea 
-                        readOnly 
-                        value={lowerCaseText} 
-                        className="w-full bg-zinc-700 text-white border-zinc-600" 
-                      />
-                      <Button 
-                        onClick={() => handleCopy(lowerCaseText)} 
-                        className="absolute top-2 right-2 bg-zinc-600 hover:bg-zinc-500 text-white text-xs py-1 px-2"
-                        size="sm"
-                      >
-                        {copied ? "Copied!" : "Copy"}
-                      </Button>
-                    </div>
-                  )}
-                </TabsContent>
-                <TabsContent value="uppercase">
-                  {upperCaseText && (
-                    <div className="relative">
-                      <Textarea 
-                        readOnly 
-                        value={upperCaseText} 
-                        className="w-full bg-zinc-700 text-white border-zinc-600" 
-                      />
-                      <Button 
-                        onClick={() => handleCopy(upperCaseText)} 
-                        className="absolute top-2 right-2 bg-zinc-600 hover:bg-zinc-500 text-white text-xs py-1 px-2"
-                        size="sm"
-                      >
-                        {copied ? "Copied!" : "Copy"}
-                      </Button>
-                    </div>
-                  )}
-                </TabsContent>
-              </Tabs>
+                )}
+              </div>
             </div>
           </div>
-          
-          <div className="mt-6">
+
+          {/* Other Styles Output */}
+          <div className="mb-6">
+            <Label className="block mb-2 font-medium">Other Cases:</Label>
+            <Tabs defaultValue="sentence" className="w-full">
+              <TabsList className="grid grid-cols-3 mb-2 bg-zinc-700"> {/* Changed background */}
+                <TabsTrigger value="sentence" className="data-[state=active]:bg-zinc-600">Sentence</TabsTrigger>
+                <TabsTrigger value="lowercase" className="data-[state=active]:bg-zinc-600">lowercase</TabsTrigger>
+                <TabsTrigger value="uppercase" className="data-[state=active]:bg-zinc-600">UPPERCASE</TabsTrigger>
+              </TabsList>
+              <TabsContent value="sentence">
+                <div className="relative">
+                  <Textarea 
+                    readOnly 
+                    value={sentenceCaseText} 
+                    placeholder="Sentence case output..."
+                    className="w-full bg-zinc-700 text-white border-zinc-600 p-4 rounded resize min-h-[80px]" 
+                  />
+                  {sentenceCaseText && (
+                    <Button 
+                      onClick={() => handleCopy(sentenceCaseText, 'sentence')} 
+                      className="absolute top-2 right-2 bg-zinc-600 hover:bg-zinc-500 text-white text-xs py-1 px-2"
+                      size="sm"
+                    >
+                      {copiedStates.sentence ? "Copied!" : "Copy"}
+                    </Button>
+                  )}
+                </div>
+              </TabsContent>
+              <TabsContent value="lowercase">
+                 <div className="relative">
+                  <Textarea 
+                    readOnly 
+                    value={lowerCaseText} 
+                    placeholder="Lowercase output..."
+                    className="w-full bg-zinc-700 text-white border-zinc-600 p-4 rounded resize min-h-[80px]" 
+                  />
+                  {lowerCaseText && (
+                    <Button 
+                      onClick={() => handleCopy(lowerCaseText, 'lower')} 
+                      className="absolute top-2 right-2 bg-zinc-600 hover:bg-zinc-500 text-white text-xs py-1 px-2"
+                      size="sm"
+                    >
+                      {copiedStates.lower ? "Copied!" : "Copy"}
+                    </Button>
+                  )}
+                </div>
+              </TabsContent>
+              <TabsContent value="uppercase">
+                 <div className="relative">
+                  <Textarea 
+                    readOnly 
+                    value={upperCaseText} 
+                    placeholder="Uppercase output..."
+                    className="w-full bg-zinc-700 text-white border-zinc-600 p-4 rounded resize min-h-[80px]" 
+                  />
+                  {upperCaseText && (
+                    <Button 
+                      onClick={() => handleCopy(upperCaseText, 'upper')} 
+                      className="absolute top-2 right-2 bg-zinc-600 hover:bg-zinc-500 text-white text-xs py-1 px-2"
+                      size="sm"
+                    >
+                      {copiedStates.upper ? "Copied!" : "Copy"}
+                    </Button>
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          {/* Options Checkboxes */}
+          <div>
             <Label className="block mb-2 font-medium">Options:</Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2"> {/* Adjusted gap */}
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   id="keep-all-caps" 
                   checked={keepAllCaps}
                   onCheckedChange={(checked) => setKeepAllCaps(checked as boolean)}
                 />
-                <Label htmlFor="keep-all-caps" className="cursor-pointer">Keep Words in All Caps</Label>
+                <Label htmlFor="keep-all-caps" className="cursor-pointer text-sm">Keep Words in All Caps</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox 
@@ -459,31 +447,15 @@ export const TitleCaseConverter = () => {
                   checked={multiLineMode}
                   onCheckedChange={(checked) => setMultiLineMode(checked as boolean)}
                 />
-                <Label htmlFor="multi-line" className="cursor-pointer">Enable Multi-Line Input</Label>
+                <Label htmlFor="multi-line" className="cursor-pointer text-sm">Enable Multi-Line Input</Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="show-explanations" 
-                  checked={showExplanations}
-                  onCheckedChange={(checked) => setShowExplanations(checked as boolean)}
-                />
-                <Label htmlFor="show-explanations" className="cursor-pointer">Show Explanations</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="highlight-changes" 
-                  checked={highlightChanges}
-                  onCheckedChange={(checked) => setHighlightChanges(checked as boolean)}
-                />
-                <Label htmlFor="highlight-changes" className="cursor-pointer">Highlight Changes</Label>
-              </div>
-              <div className="flex items-center space-x-2">
+               <div className="flex items-center space-x-2">
                 <Checkbox 
                   id="straight-quotes" 
                   checked={useStraightQuotes}
                   onCheckedChange={(checked) => setUseStraightQuotes(checked as boolean)}
                 />
-                <Label htmlFor="straight-quotes" className="cursor-pointer">Use Straight Quotes</Label>
+                <Label htmlFor="straight-quotes" className="cursor-pointer text-sm">Use Straight Quotes ("")</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox 
@@ -491,64 +463,27 @@ export const TitleCaseConverter = () => {
                   checked={convertOnPaste}
                   onCheckedChange={(checked) => setConvertOnPaste(checked as boolean)}
                 />
-                <Label htmlFor="convert-paste" className="cursor-pointer">Convert When Text Is Pasted</Label>
+                <Label htmlFor="convert-paste" className="cursor-pointer text-sm">Convert When Text Is Pasted</Label>
               </div>
+              {/* Removed Show Explanations and Highlight Changes for simplicity, can be added back if needed */}
             </div>
           </div>
-        </div>
+        </Card>
         
-        <div className="bg-zinc-800 p-4 rounded-md">
-          <h2 className="text-xl font-bold mb-3">What Is Title Case?</h2>
-          <p className="text-gray-300 mb-4">
-            Title case is a style that is traditionally used for the titles of books, movies, songs, plays, and other works. 
-            In title case, all major words are capitalized, while minor words are lowercased. A simple example would be 
-            "Lord of the Flies". Title case is often used for headlines as well, such as in newspapers, essays, and blogs, 
-            and is therefore also known as headline style.
-          </p>
-          <p className="text-gray-300">
-            The capitalization rules are explained in more detail in the next section, but basically title case means 
-            that you capitalize every word except articles (a, an, the), coordinating conjunctions (and, or, but, …), 
-            and (short) prepositions (in, on, for, up, …). This is trickier than it seems because many words can be used 
-            in different grammatical functions.
-          </p>
-        </div>
-        
-        <div className="bg-zinc-800 p-4 rounded-md">
-          <h2 className="text-xl font-bold mb-3">Title Capitalization Rules</h2>
-          <p className="text-gray-300 mb-4">
-            Title case is not a universal standard. Instead, there are a number of style guides—for example, 
-            the Chicago Manual of Style (CMOS) and the MLA Handbook—that each have their own rules for capitalizing titles. 
-            However, there is a consensus on the basic rules:
-          </p>
-          <ul className="list-disc pl-6 mb-4 text-gray-300 space-y-2">
-            <li>Always capitalize the first word in a title</li>
-            <li>
-              Capitalize the following parts of speech:
-              <ul className="list-disc pl-6 mt-1">
-                <li>nouns</li>
-                <li>pronouns (including it, my, and our)</li>
-                <li>verbs (including is, am, and other forms of to be)</li>
-                <li>adverbs</li>
-                <li>adjectives</li>
-                <li>some conjunctions (style-dependent)</li>
-                <li>long prepositions (style-dependent)</li>
-              </ul>
-            </li>
-            <li>
-              Lowercase the following parts of speech:
-              <ul className="list-disc pl-6 mt-1">
-                <li>articles</li>
-                <li>some conjunctions (style-dependent)</li>
-                <li>short prepositions (style-dependent)</li>
-              </ul>
-            </li>
-          </ul>
-          <p className="text-gray-300">
-            The main differences between the styles are in how they handle prepositions, coordinating conjunctions, 
-            subordinating conjunctions, and words at the end of titles.
-          </p>
-        </div>
+        {/* Standard About/Usage Tabs */}
+        <Tabs defaultValue="about" className="mt-6"> {/* Use standard Tabs */}
+          <TabsList className="mb-2 bg-zinc-800">
+            <TabsTrigger value="about" className="data-[state=active]:bg-zinc-700">About</TabsTrigger>
+            <TabsTrigger value="usage" className="data-[state=active]:bg-zinc-700">Usage Tips</TabsTrigger>
+          </TabsList>
+          <TabsContent value="about" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            {aboutContent}
+          </TabsContent>
+          <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
+            {usageTipsContent}
+          </TabsContent>
+        </Tabs>
       </div>
-    </div>
+    </ToolLayout>
   );
 };

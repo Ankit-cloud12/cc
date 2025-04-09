@@ -582,56 +582,47 @@ const DiscordFontsGenerator = () => {
               </TabsList>
               
               <TabsContent value="about" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-                <h3 className="font-medium mb-2">About Discord Fonts Generator</h3>
+                <h3 className="font-medium mb-2">About Discord Fonts & Text Style Generator</h3>
                 <p className="mb-4">
-                  Discord supports various text formatting options through its built-in markdown and also 
-                  displays Unicode special characters. This tool provides multiple ways to style your text 
-                  for Discord chats.
+                  Generate cool and fancy text styles for your Discord messages, username, or server names with our free Discord Fonts Generator. This tool converts your standard text into various styles using both Discord's built-in markdown and special Unicode characters.
                 </p>
-                
-                <h4 className="font-medium mt-4 mb-2">Markdown Features</h4>
                 <p className="mb-4">
-                  Discord's markdown lets you format text with simple syntax:
+                  Choose from standard Discord formatting like **bold**, *italic*, `code`, or explore dozens of unique Unicode styles like 𝗕𝗼𝗹𝗱, 𝘐𝘵𝘢𝘭𝘪𝘤, 𝓢𝓬𝓻𝓲𝓹𝓽, 𝔉𝔯𝔞𝔨𝔱𝔲𝔯, ⓜⓞⓝⓞⓢⓟⓐⓒⓔ, ⓑⓤⓑⓑⓛⓔ text, and many more. Since these styles use Unicode characters, you can easily copy and paste them directly into Discord where they will display correctly on most devices.
                 </p>
-                <ul className="list-disc pl-5 space-y-2 mb-4">
-                  <li><strong>Bold</strong> - Use **text** to make text bold</li>
-                  <li><strong>Italic</strong> - Use *text* for italic text</li>
-                  <li><strong>Strikethrough</strong> - Use ~~text~~ to strike through text</li>
-                  <li><strong>Code blocks</strong> - Use ```text``` for multi-line code blocks</li>
-                  <li><strong>Spoilers</strong> - Use ||text|| to hide text until clicked</li>
+                 <p className="mb-4">
+                  Make your messages stand out, customize your profile, or add flair to your server channels effortlessly.
+                </p>
+                 <h4 className="font-medium mb-2">Keywords:</h4>
+                 <p className="text-sm text-gray-400 mb-4">discord fonts generator, discord text generator, fancy text discord, cool discord fonts, discord markdown, unicode fonts discord, copy paste discord fonts, discord bold text, discord italic text, discord special characters</p>
+                 <h4 className="font-medium mb-2">Features:</h4>
+                 <ul className="list-disc pl-5 space-y-1">
+                  <li>Supports standard Discord markdown (bold, italic, code, quote, spoiler, etc.)</li>
+                  <li>Wide range of Unicode font styles (bold, italic, script, Fraktur, monospace, bubble, square, small caps, etc.)</li>
+                  <li>Instant preview of all generated styles</li>
+                  <li>Easy one-click copy for individual styles</li>
+                  <li>Option to copy or download all styles at once</li>
+                  <li>Works for messages, usernames, server names, and channel topics</li>
                 </ul>
-                
-                <h4 className="font-medium mt-4 mb-2">Unicode Fonts</h4>
-                <p className="mb-4">
-                  In addition to markdown, Discord displays Unicode special characters that simulate font styles.
-                  These are actual Unicode characters rather than formatting, meaning they work anywhere in Discord,
-                  including places where markdown doesn't.
-                </p>
               </TabsContent>
               
               <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-                <h3 className="font-medium mb-2">How to Use This Tool</h3>
+                <h3 className="font-medium mb-2">How to Use the Discord Font Generator</h3>
                 <ul className="list-disc pl-5 space-y-2 mb-4">
-                  <li>Type or paste your text in the input box on the left</li>
-                  <li>View all available font styles in the output section or under the Font Styles tab</li>
-                  <li>Click on any style card to filter and only show that style</li>
-                  <li>Use the copy buttons next to each style to copy just that style</li>
-                  <li>Use "Copy to Clipboard" to copy all styles (or just the selected style)</li>
-                  <li>Download your text in the selected style (or all styles) as a text file</li>
+                  <li><strong>Enter Text:</strong> Type or paste the text you want to style into the input box on the left.</li>
+                  <li><strong>Browse Styles:</strong> The output area on the right will instantly display your text in dozens of different styles, categorized for convenience (Discord Markdown, Unicode Styles, Specialty).</li>
+                  <li><strong>Copy a Style:</strong> Find a style you like and click the small "Copy" button next to it.</li>
+                  <li><strong>Paste in Discord:</strong> Go to Discord and paste the copied text into a message, your username/nickname field, server name, channel name, etc.</li>
+                  <li><strong>Copy/Download All:</strong> Use the main "Copy to Clipboard" or "Download" buttons below the output area if you want to save all the generated styles.</li>
                 </ul>
                 
-                <h4 className="font-medium mt-4 mb-2">Tips for Discord</h4>
-                <ul className="list-disc pl-5 space-y-2 mb-4">
-                  <li>Combine markdown with Unicode fonts for maximum effect</li>
-                  <li>Use Discord markdown for simple formatting needs</li>
-                  <li>Use Unicode fonts for places where markdown doesn't work (usernames, etc.)</li>
-                  <li>Some fonts may not display correctly on all devices or platforms</li>
-                  <li>Remember that excessive formatting can make text harder to read</li>
+                <h4 className="font-medium mb-2">Markdown vs. Unicode:</h4>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-gray-400">
+                  <li><strong>Discord Markdown:</strong> These styles (like `**bold**`, `*italic*`) use Discord's native formatting. They look perfect inside Discord but won't work if copied elsewhere.</li>
+                  <li><strong>Unicode Styles:</strong> These use special characters (like 𝗕𝗼𝗹𝗱, 𝘐𝘵𝘢𝘭𝘪𝘤). They can be copied and pasted into Discord and many other platforms (Twitter, Instagram, etc.). However, their appearance might vary slightly depending on the device and platform, and very complex styles might not render correctly everywhere.</li>
                 </ul>
                 
-                <p className="text-sm text-gray-400">
-                  Note: While these fonts work in Discord, some may not render properly on all devices or browsers.
-                  Test your formatted text to ensure it displays as expected.
+                <p className="text-sm text-gray-400 mt-4">
+                  Choose the style that best suits where you plan to use the text!
                 </p>
               </TabsContent>
             </Tabs>

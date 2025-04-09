@@ -4,6 +4,45 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToolLayout } from "./ToolLayout";
+import { Copy, Check } from "lucide-react"; // Import icons if needed
+
+// Define About and Usage content separately for clarity and SEO
+const aboutContent = (
+  <>
+    <h3 className="font-medium mb-2">About Strikethrough Text Generator</h3>
+    <p className="mb-4">
+      Easily create strikethrough text that you can copy and paste anywhere online with our free Strikethrough Text Generator. This tool uses a special Unicode combining character (U+0336) to add a line through the middle of your text.
+    </p>
+    <p className="mb-4">
+      Unlike standard formatting (like HTML's {'<del>'} tag or Markdown's ~~text~~), this Unicode strikethrough works in many places where text formatting isn't usually supported, such as social media bios (Instagram, Twitter), comments, chat messages (Discord, WhatsApp), and more.
+    </p>
+     <p className="mb-4">
+      Use it to indicate corrections, show deleted content, create humorous effects, or simply add a unique visual style to your text.
+    </p>
+    <h4 className="font-medium mb-2">Keywords:</h4>
+    <p className="text-sm text-gray-400">strikethrough text generator, cross out text, line through text generator, unicode strikethrough, copy paste strikethrough, social media fonts, text decorator</p>
+  </>
+);
+
+const usageTipsContent = (
+   <>
+    <h3 className="font-medium mb-2">How to Use the Strikethrough Text Generator</h3>
+    <ul className="list-disc pl-5 space-y-2 mb-4">
+      <li><strong>Enter Text:</strong> Type or paste the text you want to strike through into the input box on the left.</li>
+      <li><strong>Instant Strikethrough:</strong> The text will automatically appear with a line through it in the output box on the right.</li>
+      <li><strong>Copy Result:</strong> Click the "Copy to Clipboard" button to copy the generated strikethrough text.</li>
+      <li><strong>Paste Anywhere:</strong> Use the strikethrough text on Facebook, Instagram, Twitter, Discord, or any platform supporting Unicode combining characters.</li>
+      {/* Using plain text for examples to avoid JSX issues */}
+      <li><strong>Common Uses:</strong> Indicate edits ('old text' new text), make sarcastic comments ('I hate love Mondays'), or create checklists ('□ Task 1, □ Task 2').</li>
+      <li><strong>Download Option:</strong> Use the "Download" button to save the strikethrough text as a .txt file.</li>
+      <li><strong>Clear Input:</strong> Click "Clear" to easily start over.</li>
+    </ul>
+    <p className="text-sm text-gray-400">
+      Note: The appearance of the strikethrough line (position, thickness) might vary slightly depending on the font, device, and platform displaying the text.
+    </p>
+  </>
+);
+
 
 const StrikethroughTextGenerator = () => {
   const [inputText, setInputText] = useState("");
@@ -14,7 +53,7 @@ const StrikethroughTextGenerator = () => {
   // Statistics
   const [charCount, setCharCount] = useState(0);
   const [wordCount, setWordCount] = useState(0);
-  const [sentenceCount, setSentenceCount] = useState(0);
+  const [sentenceCount, setSentenceCount] = useState(0); // Keep for consistency
   const [lineCount, setLineCount] = useState(0);
 
   useEffect(() => {
@@ -34,13 +73,8 @@ const StrikethroughTextGenerator = () => {
       setOutputText("");
       return;
     }
-
-    // Convert to strikethrough text using Unicode combining character
-    // Using U+0336 COMBINING SHORT STROKE OVERLAY for better middle strikethrough
-    const result = text
-      .split("")
-      .map((char) => char + "\u0336") // U+0336 for middle strikethrough
-      .join("");
+    // Use spread operator for multi-byte character safety
+    const result = [...text].map((char) => char + "\u0336").join("");
     setOutputText(result);
   };
 
@@ -53,15 +87,12 @@ const StrikethroughTextGenerator = () => {
   const handleClear = () => {
     setInputText("");
     setOutputText("");
-    setCharCount(0);
-    setWordCount(0);
-    setSentenceCount(0);
-    setLineCount(0);
+    // Stats cleared via useEffect
   };
   
   const handleDownload = () => {
     const element = document.createElement("a");
-    const file = new Blob([outputText], { type: "text/plain" });
+    const file = new Blob([outputText], { type: "text/plain;charset=utf-8" }); // Specify charset
     element.href = URL.createObjectURL(file);
     element.download = "strikethrough-text.txt";
     document.body.appendChild(element);
@@ -71,129 +102,96 @@ const StrikethroughTextGenerator = () => {
 
   return (
     <ToolLayout title="Strikethrough Text Generator" hideHeader={true}>
-      <div className="container mx-auto p-4">
+      <div className="w-full"> {/* Use w-full div */}
         <h1 className="text-3xl font-bold mb-2">Strikethrough Text Generator</h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          Create strikethrough text that works everywhere. Perfect for indicating deleted content or adding unique style to your text.
+        <p className="text-gray-300 mb-6"> {/* Use consistent text color */}
+          Create strikethrough text that works everywhere using Unicode.
         </p>
 
-        {/* Input and Output Textboxes */}
-        <div className="flex flex-col md:flex-row gap-4 mb-4">
-          <div className="w-full md:w-1/2">
+        {/* Use two-column grid layout */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Input Section (Left Column) */}
+          <div className="w-full">
             <Textarea
               placeholder="Type or paste your text here"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize"
+              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize" // Standard styling
             />
+            {/* Stats Card Below Input */}
+            <Card className="p-4 mt-4 bg-zinc-800 border-zinc-700">
+              <div className="flex flex-wrap gap-4">
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Character Count</span>
+                  <span className="text-xl font-semibold">{charCount}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Word Count</span>
+                  <span className="text-xl font-semibold">{wordCount}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Sentence Count</span>
+                  <span className="text-xl font-semibold">{sentenceCount}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">Line Count</span>
+                  <span className="text-xl font-semibold">{lineCount}</span>
+                </div>
+              </div>
+            </Card>
           </div>
-          
-          <div className="w-full md:w-1/2 flex flex-col">
-            <Textarea
-              readOnly
-              placeholder="Strikethrough text will appear here"
-              value={outputText}
-              className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize mb-2"
-            />
-            
-            {/* Actions Row - Moved below output box and aligned right */}
-            <div className="flex flex-wrap gap-2 mb-4 justify-end">
-              <Button 
-                variant="outline" 
-                onClick={handleCopy} 
-                disabled={!outputText}
-                className="border-zinc-600"
-              >
-                {copied ? "Copied!" : "Copy to Clipboard"}
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={handleDownload} 
-                disabled={!outputText}
-                className="border-zinc-600"
-              >
-                Download
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={handleClear}
-                className="border-zinc-600"
-              >
-                Clear
-              </Button>
+
+          {/* Output Section (Right Column) */}
+          <div className="w-full">
+            <div className="h-full flex flex-col"> {/* Ensure full height */}
+              <Textarea
+                readOnly
+                placeholder="Strikethrough text will appear here" // Plain placeholder
+                value={outputText}
+                className="w-full min-h-[300px] bg-zinc-700 text-white border-zinc-600 p-4 rounded resize mb-4 flex-grow" // Standard styling, mb-4, flex-grow
+              />
+              {/* Action Buttons Below Output Area */}
+              <div className="flex flex-wrap gap-2 justify-end mt-auto"> {/* Use mt-auto */}
+                {/* Consistent Button Styles */}
+                <Button
+                  variant="outline"
+                  onClick={handleCopy}
+                  disabled={!outputText}
+                  className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
+                >
+                  {copied ? "Copied!" : "Copy to Clipboard"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleDownload}
+                  disabled={!outputText}
+                  className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
+                >
+                  Download
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleClear}
+                  className="bg-zinc-700 hover:bg-zinc-600 text-white border-zinc-600"
+                >
+                  Clear
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        
-        {/* Stats Card */}
-        <Card className="p-4 mb-4 bg-zinc-800 border-zinc-700">
-          <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400">Character Count</span>
-              <span className="text-xl font-semibold">{charCount}</span>
-            </div>
-            
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400">Word Count</span>
-              <span className="text-xl font-semibold">{wordCount}</span>
-            </div>
-            
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400">Sentence Count</span>
-              <span className="text-xl font-semibold">{sentenceCount}</span>
-            </div>
-            
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400">Line Count</span>
-              <span className="text-xl font-semibold">{lineCount}</span>
-            </div>
-          </div>
-        </Card>
-        
-        {/* Information Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
+
+        {/* Standard About/Usage Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6"> {/* Add margin-top */}
           <TabsList className="mb-2 bg-zinc-800">
             <TabsTrigger value="about" className="data-[state=active]:bg-zinc-700">About</TabsTrigger>
             <TabsTrigger value="usage" className="data-[state=active]:bg-zinc-700">Usage Tips</TabsTrigger>
           </TabsList>
-          
           <TabsContent value="about" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-            <h3 className="font-medium mb-2">About Strikethrough Text Generator</h3>
-            <p className="mb-4">
-              This tool uses Unicode combining characters to create strikethrough
-              text that works across different platforms. Unlike HTML or Markdown
-              strikethrough, this method creates text that can be used in places
-              where formatting isn't normally allowed.
-            </p>
-            <p className="mb-4">
-              Strikethrough text is commonly used to show deleted content, changes,
-              or humorous effects in social media posts, messages, and creative
-              writing.
-            </p>
-            <p className="mb-4">
-              The strikethrough text generated is compatible with most platforms
-              that support Unicode, including Facebook, Twitter, Instagram, Discord,
-              and more.
-            </p>
+            {aboutContent}
           </TabsContent>
-          
           <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-            <h3 className="font-medium mb-2">Usage Tips</h3>
-            <ul className="list-disc pl-5 space-y-2 mb-4">
-              <li>Type or paste your text in the input box on the left</li>
-              <li>The strikethrough version will automatically appear on the right</li>
-              <li>Use the "Copy to Clipboard" button to copy the transformed text</li>
-              <li>You can use strikethrough text to indicate deleted or outdated information</li>
-              <li>Strikethrough is great for joke setups where you cross out one word and replace it</li>
-              <li>For longer text, use the "Download" button to save as a text file</li>
-            </ul>
-            
-            <p className="text-sm text-gray-400">
-              Note: While strikethrough text works on most platforms, some applications or websites may have 
-              limitations with how they render these Unicode combining characters.
-            </p>
+            {usageTipsContent}
           </TabsContent>
         </Tabs>
       </div>

@@ -292,39 +292,34 @@ const CursedTextGenerator = () => {
           </TabsList>
           
           <TabsContent value="about" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-            <h3 className="font-medium mb-2">About Cursed Text Generator</h3>
+            <h3 className="font-medium mb-2">About Cursed Text / Zalgo Text Generator</h3>
             <p className="mb-4">
-              This tool creates disturbing, glitched, and otherworldly text effects using a combination of 
-              Unicode combining characters and special symbols. The result is text that appears corrupted, 
-              distorted, or "cursed."
+              Unleash chaos with our Cursed Text Generator! Also known as Zalgo text, this tool uses special Unicode combining characters (diacritics) stacked above, below, and through your normal text to create a disturbing, glitched, or "cursed" appearance.
             </p>
             <p className="mb-4">
-              Cursed text has become popular in internet culture for creating creepy messages, horror-themed 
-              content, and attention-grabbing posts on social media. Each style uses different Unicode 
-              character combinations to create a unique corrupted appearance.
+              Perfect for horror themes, creepy pasta, unsettling social media posts (Discord, Twitter, etc.), or anywhere you want text that looks corrupted and glitchy. We generate multiple variations, allowing you to choose the level of distortion.
             </p>
-            <p className="mb-4">
-              The generated styles work on most platforms that support Unicode, including Discord, Twitter, 
-              Instagram, and many messaging apps.
+             <p className="mb-4">
+              Copy and paste these unique text effects easily. Note that excessive use of combining characters might cause rendering issues on some platforms or devices.
             </p>
+            <h4 className="font-medium mb-2">Keywords:</h4>
+            <p className="text-sm text-gray-400">cursed text generator, zalgo text generator, glitch text, creepy text, distorted text, unicode combiner, scary text generator, copy paste cursed text</p>
           </TabsContent>
           
           <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-            <h3 className="font-medium mb-2">Usage Tips</h3>
+            <h3 className="font-medium mb-2">How to Generate Cursed (Zalgo) Text</h3>
             <ul className="list-disc pl-5 space-y-2 mb-4">
-              <li>Type or paste your text in the input box on the left</li>
-              <li>Multiple cursed text variations will appear on the right</li>
-              <li>Use the small copy button next to each style to copy just that variation</li>
-              <li>Use "Copy All Styles" to copy all variations at once</li>
-              <li>For longer text or multiple styles, use the "Download" button</li>
-              <li>Cursed text is perfect for Halloween content, horror themes, and creepy messages</li>
-              <li>Try different text lengths to see how each style distorts the content</li>
+              <li><strong>Enter Text:</strong> Type or paste the text you want to curse into the left input field.</li>
+              <li><strong>Instant Glitch:</strong> Multiple variations of cursed/Zalgo text will automatically generate in the output area on the right.</li>
+              <li><strong>Copy Individual Style:</strong> Click the small copy icon next to any specific style you like.</li>
+              <li><strong>Copy All Styles:</strong> Use the "Copy All Styles" button below the output to copy every generated variation, separated by newlines.</li>
+              <li><strong>Paste Carefully:</strong> Paste the cursed text into Discord, Twitter, forums, or other platforms. Be mindful that very intense styles might cause lag or display issues.</li>
+              <li><strong>Download Option:</strong> Use "Download" to save all generated styles to a text file.</li>
+              <li><strong>Clear Input:</strong> Click "Clear" to remove text and start again.</li>
             </ul>
             
             <p className="text-sm text-gray-400">
-              Note: Some platforms may limit how these characters display, and excessive use of combining 
-              characters may cause display issues on some devices. The most complex styles may not render 
-              properly everywhere.
+              Warning: Excessive use of combining characters (which create the cursed effect) can sometimes cause rendering problems or slow down certain applications or devices. Use responsibly!
             </p>
           </TabsContent>
         </Tabs>

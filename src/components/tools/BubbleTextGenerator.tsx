@@ -205,43 +205,38 @@ const BubbleTextGenerator = () => {
           </TabsList>
           
           <TabsContent value="about" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-            <h3 className="font-medium mb-2">About Bubble Text Generator</h3>
+            <h3 className="font-medium mb-2">About Bubble Text Generator (Circled & Filled)</h3>
             <p className="mb-4">
-              This generator creates two types of special bubble text:
+              Create eye-catching ⓑⓤⓑⓑⓛⓔ ⓣⓔⓧⓣ instantly with our free online generator! This tool converts your standard text into two unique styles using special Unicode characters:
             </p>
             <ul className="list-disc pl-5 space-y-2 mb-4">
               <li>
-                <span className="font-medium">Regular Bubble Text:</span> Circled Unicode characters (ⓐ, Ⓑ, etc.) that 
-                create a distinctive outlined appearance.
+                <span className="font-medium">Circled Bubble Text:</span> Features letters enclosed in circles (e.g., ⓐ, Ⓑ, ⓒ) for a classic outlined bubble look. Perfect for adding a fun touch to messages.
               </li>
               <li>
-                <span className="font-medium">Filled Bubble Text:</span> Square-enclosed characters (🅐, 🅑, etc.) that 
-                give a bolder, filled appearance to your text.
+                <span className="font-medium">Filled Bubble Text:</span> Uses characters enclosed in filled squares or circles (e.g., 🅐, 🅑, 🅒) for a bolder, more solid appearance. Great for standing out in usernames or profiles.
               </li>
             </ul>
             <p className="mb-4">
-              These bubble characters aren't actual font styles but special Unicode symbols. This means they can be used in places
-              where formatting isn't normally allowed, like social media profiles, messages, and usernames.
+              Since these are Unicode symbols, not fonts, you can copy and paste this bubble text almost anywhere online – social media bios (Instagram, Twitter, TikTok), chat messages (Discord, WhatsApp), comments, and more, even where standard text formatting isn't supported.
             </p>
-            <p className="mb-4">
-              The bubble text generated is compatible with most platforms including Facebook, Twitter, Instagram, TikTok, Discord, and more.
-            </p>
+             <h4 className="font-medium mb-2">Keywords:</h4>
+             <p className="text-sm text-gray-400">bubble text generator, circled text, filled bubble text, bubble letters, unicode text converter, social media fonts, cool text generator, copy paste fonts</p>
           </TabsContent>
           
           <TabsContent value="usage" className="p-4 bg-zinc-800 rounded-md border border-zinc-700">
-            <h3 className="font-medium mb-2">Usage Tips</h3>
+            <h3 className="font-medium mb-2">How to Generate Bubble Text</h3>
             <ul className="list-disc pl-5 space-y-2 mb-4">
-              <li>Type or paste your text in the input box on the left</li>
-              <li>Both bubble text versions will automatically appear on the right</li>
-              <li>Regular bubble text appears first, followed by filled bubble text</li>
-              <li>"Copy to Clipboard" will copy both text styles</li>
-              <li>Use these special characters to make your content stand out on social media</li>
-              <li>For longer text, use the "Download" button to save as a text file</li>
+              <li><strong>Enter Your Text:</strong> Type or paste the text you want to convert into the left input field.</li>
+              <li><strong>Instant Conversion:</strong> Both the circled (outlined) and filled bubble text versions will appear automatically in the output box on the right.</li>
+              <li><strong>Copy Both Styles:</strong> Click the "Copy to Clipboard" button to copy both generated styles, separated by a blank line, ready to paste.</li>
+              <li><strong>Paste Anywhere:</strong> Use the copied bubble text on Instagram, Facebook, Twitter, Discord, game usernames, or any platform that supports Unicode characters.</li>
+              <li><strong>Download Text:</strong> For longer conversions, use the "Download" button to save both styles to a .txt file.</li>
+              <li><strong>Clear Input:</strong> Click the "Clear" button to easily start over.</li>
             </ul>
             
             <p className="text-sm text-gray-400">
-              Note: Some platforms may have limitations on where Unicode characters can be used.
-              For example, some websites might not allow these characters in usernames or certain fields.
+              Note: While widely supported, some websites or apps might restrict the use of certain Unicode characters. Always test compatibility if using bubble text in critical fields like usernames.
             </p>
           </TabsContent>
         </Tabs>
