@@ -1,4 +1,4 @@
-In italic text generator, input window should be equal to the size of output window. Keep both identical to each other in terms of length and breadth.import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
